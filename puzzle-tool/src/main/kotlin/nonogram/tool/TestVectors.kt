@@ -1,5 +1,6 @@
 package nonogram.tool
 
+import nonogram.core.format.*
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nonogram</string>
+    <string name="back">Back</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_load">Couldn\'t load the puzzle.</string>
+
+    <string name="home_daily_title">Today\'s puzzle</string>
+    <string name="home_daily_start">Start</string>
+    <string name="home_daily_continue">Continue</string>
+    <string name="home_daily_done">Solved</string>
+    <string name="home_streak">%1$d-day streak</string>
+    <string name="home_tab_mono">Classic</string>
+    <string name="home_tab_color">Color</string>
+    <string name="pack_progress">%1$d / %2$d</string>
+
+    <string name="game_puzzle_number">Puzzle #%1$d</string>
+    <string name="game_tool_fill">Fill</string>
+    <string name="game_tool_cross">Mark as empty</string>
+    <string name="game_completed">Solved!</string>
+    <string name="game_time">Time %1$s</string>
+    <string name="game_next">Next puzzle</string>
+    <string name="game_back_to_list">Back to list</string>
+    <string name="game_restart">Play again</string>
+    <string name="game_restart_confirm">Your progress on this puzzle will be cleared.</string>
+
+    <string name="reward_title">Out of hints</string>
+    <string name="reward_watch">Watch ad</string>
+    <string name="reward_loading">Try (ad loading…)</string>
+    <string name="reward_not_ready">The ad isn\'t ready yet. Please try again shortly.</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_privacy">Privacy &amp; ad consent</string>
+    <string name="settings_licenses">Open source licenses</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_test_ads">Test ads (debug build)</string>
+    <string name="licenses_intro">This app uses the following open source software and content.</string>
+
+    <plurals name="home_hints">
+        <item quantity="one">%1$d hint</item>
+        <item quantity="other">%1$d hints</item>
+    </plurals>
+    <plurals name="game_hints_used">
+        <item quantity="one">%1$d hint</item>
+        <item quantity="other">%1$d hints</item>
+    </plurals>
+    <plurals name="reward_text">
+        <item quantity="one">Watch a short ad to get %1$d hint. You also get 3 free hints every day.</item>
+        <item quantity="other">Watch a short ad to get %1$d hints. You also get 3 free hints every day.</item>
+    </plurals>
+    <plurals name="reward_granted">
+        <item quantity="one">You got %1$d hint!</item>
+        <item quantity="other">You got %1$d hints!</item>
+    </plurals>
+</resources>

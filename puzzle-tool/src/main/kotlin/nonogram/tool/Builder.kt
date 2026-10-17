@@ -1,5 +1,6 @@
 package nonogram.tool
 
+import nonogram.core.format.*
 import kotlinx.serialization.json.Json
 import nonogram.core.BoardSolver
 import nonogram.core.DifficultyRater
@@ -229,8 +230,15 @@ fun build(cfg: BuildConfig): BuildReport {
     val index = IndexOut(
         packs = allPacks.map { p ->
             PackSummary(
-                p.id, p.kind, p.theme, p.volume, p.title, "${p.id}.json", p.puzzles.size,
-                (1..5).map { l -> p.puzzles.count { it.difficulty.level == l } },
+                id = p.id,
+                kind = p.kind,
+                theme = p.theme,
+                volume = p.volume,
+                title = p.title,
+                themeTitle = THEMES.values.firstOrNull { it.id == p.theme }?.title ?: p.title,
+                file = "${p.id}.json",
+                count = p.puzzles.size,
+                levels = (1..5).map { l -> p.puzzles.count { it.difficulty.level == l } },
             )
         },
         daily = DailySummary("daily.json", daily.epoch, daily.puzzles.size),

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">노노그램</string>
+    <string name="back">뒤로</string>
+    <string name="ok">확인</string>
+    <string name="cancel">취소</string>
+    <string name="error_load">퍼즐을 불러오지 못했어요.</string>
+
+    <string name="home_daily_title">오늘의 퍼즐</string>
+    <string name="home_daily_start">시작</string>
+    <string name="home_daily_continue">이어하기</string>
+    <string name="home_daily_done">완료</string>
+    <string name="home_streak">%1$d일 연속</string>
+    <string name="home_tab_mono">흑백</string>
+    <string name="home_tab_color">컬러</string>
+    <string name="pack_progress">%1$d / %2$d</string>
+
+    <string name="game_puzzle_number">%1$d번 퍼즐</string>
+    <string name="game_tool_fill">칠하기</string>
+    <string name="game_tool_cross">빈칸 표시</string>
+    <string name="game_completed">완성!</string>
+    <string name="game_time">시간 %1$s</string>
+    <string name="game_next">다음 퍼즐</string>
+    <string name="game_back_to_list">목록으로</string>
+    <string name="game_restart">다시 풀기</string>
+    <string name="game_restart_confirm">이 퍼즐의 진행 상황이 지워집니다.</string>
+
+    <string name="reward_title">힌트를 다 썼어요</string>
+    <string name="reward_watch">광고 보기</string>
+    <string name="reward_loading">광고 불러오는 중…</string>
+    <string name="reward_not_ready">광고가 아직 준비되지 않았어요. 잠시 후 다시 시도해 주세요.</string>
+
+    <string name="settings_title">설정</string>
+    <string name="settings_privacy">개인정보 · 광고 동의 설정</string>
+    <string name="settings_licenses">오픈소스 라이선스</string>
+    <string name="settings_version">버전 %1$s</string>
+    <string name="settings_test_ads">테스트 광고 사용 중 (디버그 빌드)</string>
+    <string name="licenses_intro">이 앱은 다음 오픈소스 소프트웨어와 콘텐츠를 사용합니다.</string>
+
+    <plurals name="home_hints">
+        <item quantity="other">힌트 %1$d개</item>
+    </plurals>
+    <plurals name="game_hints_used">
+        <item quantity="other">힌트 %1$d개</item>
+    </plurals>
+    <plurals name="reward_text">
+        <item quantity="other">짧은 광고를 보면 힌트 %1$d개를 받아요. 매일 무료 힌트 3개도 채워져요.</item>
+    </plurals>
+    <plurals name="reward_granted">
+        <item quantity="other">힌트 %1$d개를 받았어요!</item>
+    </plurals>
+</resources>

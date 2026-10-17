@@ -10,6 +10,10 @@
                 "ko": "컬러 활동 1",
                 "en": "Color Activities 1"
             },
+            "themeTitle": {
+                "ko": "활동",
+                "en": "Activities"
+            },
             "file": "color-activities-1.json",
             "count": 34,
             "levels": [
@@ -28,6 +32,10 @@
             "title": {
                 "ko": "컬러 활동 2",
                 "en": "Color Activities 2"
+            },
+            "themeTitle": {
+                "ko": "활동",
+                "en": "Activities"
             },
             "file": "color-activities-2.json",
             "count": 33,
@@ -48,6 +56,10 @@
                 "ko": "컬러 표정 1",
                 "en": "Color Faces 1"
             },
+            "themeTitle": {
+                "ko": "표정",
+                "en": "Faces"
+            },
             "file": "color-faces-1.json",
             "count": 40,
             "levels": [
@@ -66,6 +78,10 @@
             "title": {
                 "ko": "컬러 표정 2",
                 "en": "Color Faces 2"
+            },
+            "themeTitle": {
+                "ko": "표정",
+                "en": "Faces"
             },
             "file": "color-faces-2.json",
             "count": 39,
@@ -86,6 +102,10 @@
                 "ko": "컬러 표정 3",
                 "en": "Color Faces 3"
             },
+            "themeTitle": {
+                "ko": "표정",
+                "en": "Faces"
+            },
             "file": "color-faces-3.json",
             "count": 39,
             "levels": [
@@ -104,6 +124,10 @@
             "title": {
                 "ko": "컬러 표정 4",
                 "en": "Color Faces 4"
+            },
+            "themeTitle": {
+                "ko": "표정",
+                "en": "Faces"
             },
             "file": "color-faces-4.json",
             "count": 39,
@@ -124,6 +148,10 @@
                 "ko": "컬러 음식 1",
                 "en": "Color Food & Drink 1"
             },
+            "themeTitle": {
+                "ko": "음식",
+                "en": "Food & Drink"
+            },
             "file": "color-food-1.json",
             "count": 40,
             "levels": [
@@ -142,6 +170,10 @@
             "title": {
                 "ko": "컬러 음식 2",
                 "en": "Color Food & Drink 2"
+            },
+            "themeTitle": {
+                "ko": "음식",
+                "en": "Food & Drink"
             },
             "file": "color-food-2.json",
             "count": 39,
@@ -162,6 +194,10 @@
                 "ko": "컬러 음식 3",
                 "en": "Color Food & Drink 3"
             },
+            "themeTitle": {
+                "ko": "음식",
+                "en": "Food & Drink"
+            },
             "file": "color-food-3.json",
             "count": 39,
             "levels": [
@@ -180,6 +216,10 @@
             "title": {
                 "ko": "컬러 동물과 자연 1",
                 "en": "Color Animals & Nature 1"
+            },
+            "themeTitle": {
+                "ko": "동물과 자연",
+                "en": "Animals & Nature"
             },
             "file": "color-nature-1.json",
             "count": 33,
@@ -200,6 +240,10 @@
                 "ko": "컬러 동물과 자연 2",
                 "en": "Color Animals & Nature 2"
             },
+            "themeTitle": {
+                "ko": "동물과 자연",
+                "en": "Animals & Nature"
+            },
             "file": "color-nature-2.json",
             "count": 32,
             "levels": [
@@ -218,6 +262,10 @@
             "title": {
                 "ko": "컬러 동물과 자연 3",
                 "en": "Color Animals & Nature 3"
+            },
+            "themeTitle": {
+                "ko": "동물과 자연",
+                "en": "Animals & Nature"
             },
             "file": "color-nature-3.json",
             "count": 32,
@@ -238,6 +286,10 @@
                 "ko": "컬러 동물과 자연 4",
                 "en": "Color Animals & Nature 4"
             },
+            "themeTitle": {
+                "ko": "동물과 자연",
+                "en": "Animals & Nature"
+            },
             "file": "color-nature-4.json",
             "count": 32,
             "levels": [
@@ -256,6 +308,10 @@
             "title": {
                 "ko": "컬러 물건 1",
                 "en": "Color Objects 1"
+            },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
             },
             "file": "color-objects-1.json",
             "count": 35,
@@ -276,6 +332,10 @@
                 "ko": "컬러 물건 2",
                 "en": "Color Objects 2"
             },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
+            },
             "file": "color-objects-2.json",
             "count": 35,
             "levels": [
@@ -294,6 +354,10 @@
             "title": {
                 "ko": "컬러 물건 3",
                 "en": "Color Objects 3"
+            },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
             },
             "file": "color-objects-3.json",
             "count": 35,
@@ -314,6 +378,10 @@
                 "ko": "컬러 물건 4",
                 "en": "Color Objects 4"
             },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
+            },
             "file": "color-objects-4.json",
             "count": 35,
             "levels": [
@@ -332,6 +400,10 @@
             "title": {
                 "ko": "컬러 물건 5",
                 "en": "Color Objects 5"
+            },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
             },
             "file": "color-objects-5.json",
             "count": 35,
@@ -352,6 +424,10 @@
                 "ko": "컬러 물건 6",
                 "en": "Color Objects 6"
             },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
+            },
             "file": "color-objects-6.json",
             "count": 35,
             "levels": [
@@ -370,6 +446,10 @@
             "title": {
                 "ko": "컬러 사람 1",
                 "en": "Color People 1"
+            },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
             },
             "file": "color-people-1.json",
             "count": 38,
@@ -390,6 +470,10 @@
                 "ko": "컬러 사람 2",
                 "en": "Color People 2"
             },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
+            },
             "file": "color-people-2.json",
             "count": 38,
             "levels": [
@@ -408,6 +492,10 @@
             "title": {
                 "ko": "컬러 사람 3",
                 "en": "Color People 3"
+            },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
             },
             "file": "color-people-3.json",
             "count": 38,
@@ -428,6 +516,10 @@
                 "ko": "컬러 사람 4",
                 "en": "Color People 4"
             },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
+            },
             "file": "color-people-4.json",
             "count": 38,
             "levels": [
@@ -446,6 +538,10 @@
             "title": {
                 "ko": "컬러 사람 5",
                 "en": "Color People 5"
+            },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
             },
             "file": "color-people-5.json",
             "count": 37,
@@ -466,6 +562,10 @@
                 "ko": "컬러 사람 6",
                 "en": "Color People 6"
             },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
+            },
             "file": "color-people-6.json",
             "count": 37,
             "levels": [
@@ -484,6 +584,10 @@
             "title": {
                 "ko": "컬러 사람 7",
                 "en": "Color People 7"
+            },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
             },
             "file": "color-people-7.json",
             "count": 37,
@@ -504,6 +608,10 @@
                 "ko": "컬러 사람 8",
                 "en": "Color People 8"
             },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
+            },
             "file": "color-people-8.json",
             "count": 37,
             "levels": [
@@ -522,6 +630,10 @@
             "title": {
                 "ko": "컬러 기호 1",
                 "en": "Color Symbols 1"
+            },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
             },
             "file": "color-symbols-1.json",
             "count": 33,
@@ -542,6 +654,10 @@
                 "ko": "컬러 기호 2",
                 "en": "Color Symbols 2"
             },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
+            },
             "file": "color-symbols-2.json",
             "count": 33,
             "levels": [
@@ -560,6 +676,10 @@
             "title": {
                 "ko": "컬러 기호 3",
                 "en": "Color Symbols 3"
+            },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
             },
             "file": "color-symbols-3.json",
             "count": 33,
@@ -580,6 +700,10 @@
                 "ko": "컬러 기호 4",
                 "en": "Color Symbols 4"
             },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
+            },
             "file": "color-symbols-4.json",
             "count": 32,
             "levels": [
@@ -598,6 +722,10 @@
             "title": {
                 "ko": "컬러 기호 5",
                 "en": "Color Symbols 5"
+            },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
             },
             "file": "color-symbols-5.json",
             "count": 32,
@@ -618,6 +746,10 @@
                 "ko": "컬러 여행과 장소 1",
                 "en": "Color Travel & Places 1"
             },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
+            },
             "file": "color-travel-1.json",
             "count": 39,
             "levels": [
@@ -636,6 +768,10 @@
             "title": {
                 "ko": "컬러 여행과 장소 2",
                 "en": "Color Travel & Places 2"
+            },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
             },
             "file": "color-travel-2.json",
             "count": 39,
@@ -656,6 +792,10 @@
                 "ko": "컬러 여행과 장소 3",
                 "en": "Color Travel & Places 3"
             },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
+            },
             "file": "color-travel-3.json",
             "count": 39,
             "levels": [
@@ -674,6 +814,10 @@
             "title": {
                 "ko": "컬러 여행과 장소 4",
                 "en": "Color Travel & Places 4"
+            },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
             },
             "file": "color-travel-4.json",
             "count": 38,
@@ -694,6 +838,10 @@
                 "ko": "컬러 여행과 장소 5",
                 "en": "Color Travel & Places 5"
             },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
+            },
             "file": "color-travel-5.json",
             "count": 38,
             "levels": [
@@ -712,6 +860,10 @@
             "title": {
                 "ko": "활동 1",
                 "en": "Activities 1"
+            },
+            "themeTitle": {
+                "ko": "활동",
+                "en": "Activities"
             },
             "file": "mono-activities-1.json",
             "count": 26,
@@ -732,6 +884,10 @@
                 "ko": "활동 2",
                 "en": "Activities 2"
             },
+            "themeTitle": {
+                "ko": "활동",
+                "en": "Activities"
+            },
             "file": "mono-activities-2.json",
             "count": 25,
             "levels": [
@@ -750,6 +906,10 @@
             "title": {
                 "ko": "표정 1",
                 "en": "Faces 1"
+            },
+            "themeTitle": {
+                "ko": "표정",
+                "en": "Faces"
             },
             "file": "mono-faces-1.json",
             "count": 39,
@@ -770,6 +930,10 @@
                 "ko": "표정 2",
                 "en": "Faces 2"
             },
+            "themeTitle": {
+                "ko": "표정",
+                "en": "Faces"
+            },
             "file": "mono-faces-2.json",
             "count": 39,
             "levels": [
@@ -788,6 +952,10 @@
             "title": {
                 "ko": "음식 1",
                 "en": "Food & Drink 1"
+            },
+            "themeTitle": {
+                "ko": "음식",
+                "en": "Food & Drink"
             },
             "file": "mono-food-1.json",
             "count": 39,
@@ -808,6 +976,10 @@
                 "ko": "음식 2",
                 "en": "Food & Drink 2"
             },
+            "themeTitle": {
+                "ko": "음식",
+                "en": "Food & Drink"
+            },
             "file": "mono-food-2.json",
             "count": 39,
             "levels": [
@@ -826,6 +998,10 @@
             "title": {
                 "ko": "동물과 자연 1",
                 "en": "Animals & Nature 1"
+            },
+            "themeTitle": {
+                "ko": "동물과 자연",
+                "en": "Animals & Nature"
             },
             "file": "mono-nature-1.json",
             "count": 38,
@@ -846,6 +1022,10 @@
                 "ko": "동물과 자연 2",
                 "en": "Animals & Nature 2"
             },
+            "themeTitle": {
+                "ko": "동물과 자연",
+                "en": "Animals & Nature"
+            },
             "file": "mono-nature-2.json",
             "count": 38,
             "levels": [
@@ -864,6 +1044,10 @@
             "title": {
                 "ko": "물건 1",
                 "en": "Objects 1"
+            },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
             },
             "file": "mono-objects-1.json",
             "count": 37,
@@ -884,6 +1068,10 @@
                 "ko": "물건 2",
                 "en": "Objects 2"
             },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
+            },
             "file": "mono-objects-2.json",
             "count": 37,
             "levels": [
@@ -902,6 +1090,10 @@
             "title": {
                 "ko": "물건 3",
                 "en": "Objects 3"
+            },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
             },
             "file": "mono-objects-3.json",
             "count": 37,
@@ -922,6 +1114,10 @@
                 "ko": "물건 4",
                 "en": "Objects 4"
             },
+            "themeTitle": {
+                "ko": "물건",
+                "en": "Objects"
+            },
             "file": "mono-objects-4.json",
             "count": 36,
             "levels": [
@@ -940,6 +1136,10 @@
             "title": {
                 "ko": "사람 1",
                 "en": "People 1"
+            },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
             },
             "file": "mono-people-1.json",
             "count": 38,
@@ -960,6 +1160,10 @@
                 "ko": "사람 2",
                 "en": "People 2"
             },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
+            },
             "file": "mono-people-2.json",
             "count": 37,
             "levels": [
@@ -978,6 +1182,10 @@
             "title": {
                 "ko": "사람 3",
                 "en": "People 3"
+            },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
             },
             "file": "mono-people-3.json",
             "count": 37,
@@ -998,6 +1206,10 @@
                 "ko": "사람 4",
                 "en": "People 4"
             },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
+            },
             "file": "mono-people-4.json",
             "count": 37,
             "levels": [
@@ -1016,6 +1228,10 @@
             "title": {
                 "ko": "사람 5",
                 "en": "People 5"
+            },
+            "themeTitle": {
+                "ko": "사람",
+                "en": "People"
             },
             "file": "mono-people-5.json",
             "count": 37,
@@ -1036,6 +1252,10 @@
                 "ko": "기호 1",
                 "en": "Symbols 1"
             },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
+            },
             "file": "mono-symbols-1.json",
             "count": 38,
             "levels": [
@@ -1054,6 +1274,10 @@
             "title": {
                 "ko": "기호 2",
                 "en": "Symbols 2"
+            },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
             },
             "file": "mono-symbols-2.json",
             "count": 37,
@@ -1074,6 +1298,10 @@
                 "ko": "기호 3",
                 "en": "Symbols 3"
             },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
+            },
             "file": "mono-symbols-3.json",
             "count": 37,
             "levels": [
@@ -1092,6 +1320,10 @@
             "title": {
                 "ko": "기호 4",
                 "en": "Symbols 4"
+            },
+            "themeTitle": {
+                "ko": "기호",
+                "en": "Symbols"
             },
             "file": "mono-symbols-4.json",
             "count": 37,
@@ -1112,6 +1344,10 @@
                 "ko": "여행과 장소 1",
                 "en": "Travel & Places 1"
             },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
+            },
             "file": "mono-travel-1.json",
             "count": 37,
             "levels": [
@@ -1130,6 +1366,10 @@
             "title": {
                 "ko": "여행과 장소 2",
                 "en": "Travel & Places 2"
+            },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
             },
             "file": "mono-travel-2.json",
             "count": 37,
@@ -1150,6 +1390,10 @@
                 "ko": "여행과 장소 3",
                 "en": "Travel & Places 3"
             },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
+            },
             "file": "mono-travel-3.json",
             "count": 37,
             "levels": [
@@ -1168,6 +1412,10 @@
             "title": {
                 "ko": "여행과 장소 4",
                 "en": "Travel & Places 4"
+            },
+            "themeTitle": {
+                "ko": "여행과 장소",
+                "en": "Travel & Places"
             },
             "file": "mono-travel-4.json",
             "count": 37,

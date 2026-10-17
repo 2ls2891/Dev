@@ -1,5 +1,6 @@
 package nonogram.tool
 
+import nonogram.core.format.*
 import java.awt.Color
 import java.awt.Font
 import java.awt.RenderingHints
