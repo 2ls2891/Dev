@@ -1,0 +1,1204 @@
+{
+    "format": 1,
+    "packs": [
+        {
+            "id": "color-activities-1",
+            "kind": "color",
+            "theme": "activities",
+            "volume": 1,
+            "title": {
+                "ko": "컬러 활동 1",
+                "en": "Color Activities 1"
+            },
+            "file": "color-activities-1.json",
+            "count": 34,
+            "levels": [
+                0,
+                11,
+                13,
+                10,
+                0
+            ]
+        },
+        {
+            "id": "color-activities-2",
+            "kind": "color",
+            "theme": "activities",
+            "volume": 2,
+            "title": {
+                "ko": "컬러 활동 2",
+                "en": "Color Activities 2"
+            },
+            "file": "color-activities-2.json",
+            "count": 33,
+            "levels": [
+                0,
+                9,
+                12,
+                11,
+                1
+            ]
+        },
+        {
+            "id": "color-faces-1",
+            "kind": "color",
+            "theme": "faces",
+            "volume": 1,
+            "title": {
+                "ko": "컬러 표정 1",
+                "en": "Color Faces 1"
+            },
+            "file": "color-faces-1.json",
+            "count": 40,
+            "levels": [
+                0,
+                15,
+                15,
+                10,
+                0
+            ]
+        },
+        {
+            "id": "color-faces-2",
+            "kind": "color",
+            "theme": "faces",
+            "volume": 2,
+            "title": {
+                "ko": "컬러 표정 2",
+                "en": "Color Faces 2"
+            },
+            "file": "color-faces-2.json",
+            "count": 39,
+            "levels": [
+                0,
+                14,
+                16,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-faces-3",
+            "kind": "color",
+            "theme": "faces",
+            "volume": 3,
+            "title": {
+                "ko": "컬러 표정 3",
+                "en": "Color Faces 3"
+            },
+            "file": "color-faces-3.json",
+            "count": 39,
+            "levels": [
+                0,
+                14,
+                15,
+                10,
+                0
+            ]
+        },
+        {
+            "id": "color-faces-4",
+            "kind": "color",
+            "theme": "faces",
+            "volume": 4,
+            "title": {
+                "ko": "컬러 표정 4",
+                "en": "Color Faces 4"
+            },
+            "file": "color-faces-4.json",
+            "count": 39,
+            "levels": [
+                0,
+                14,
+                14,
+                11,
+                0
+            ]
+        },
+        {
+            "id": "color-food-1",
+            "kind": "color",
+            "theme": "food",
+            "volume": 1,
+            "title": {
+                "ko": "컬러 음식 1",
+                "en": "Color Food & Drink 1"
+            },
+            "file": "color-food-1.json",
+            "count": 40,
+            "levels": [
+                0,
+                12,
+                15,
+                12,
+                1
+            ]
+        },
+        {
+            "id": "color-food-2",
+            "kind": "color",
+            "theme": "food",
+            "volume": 2,
+            "title": {
+                "ko": "컬러 음식 2",
+                "en": "Color Food & Drink 2"
+            },
+            "file": "color-food-2.json",
+            "count": 39,
+            "levels": [
+                0,
+                12,
+                14,
+                13,
+                0
+            ]
+        },
+        {
+            "id": "color-food-3",
+            "kind": "color",
+            "theme": "food",
+            "volume": 3,
+            "title": {
+                "ko": "컬러 음식 3",
+                "en": "Color Food & Drink 3"
+            },
+            "file": "color-food-3.json",
+            "count": 39,
+            "levels": [
+                0,
+                13,
+                14,
+                11,
+                1
+            ]
+        },
+        {
+            "id": "color-nature-1",
+            "kind": "color",
+            "theme": "nature",
+            "volume": 1,
+            "title": {
+                "ko": "컬러 동물과 자연 1",
+                "en": "Color Animals & Nature 1"
+            },
+            "file": "color-nature-1.json",
+            "count": 33,
+            "levels": [
+                0,
+                12,
+                14,
+                6,
+                1
+            ]
+        },
+        {
+            "id": "color-nature-2",
+            "kind": "color",
+            "theme": "nature",
+            "volume": 2,
+            "title": {
+                "ko": "컬러 동물과 자연 2",
+                "en": "Color Animals & Nature 2"
+            },
+            "file": "color-nature-2.json",
+            "count": 32,
+            "levels": [
+                0,
+                11,
+                13,
+                8,
+                0
+            ]
+        },
+        {
+            "id": "color-nature-3",
+            "kind": "color",
+            "theme": "nature",
+            "volume": 3,
+            "title": {
+                "ko": "컬러 동물과 자연 3",
+                "en": "Color Animals & Nature 3"
+            },
+            "file": "color-nature-3.json",
+            "count": 32,
+            "levels": [
+                0,
+                11,
+                14,
+                7,
+                0
+            ]
+        },
+        {
+            "id": "color-nature-4",
+            "kind": "color",
+            "theme": "nature",
+            "volume": 4,
+            "title": {
+                "ko": "컬러 동물과 자연 4",
+                "en": "Color Animals & Nature 4"
+            },
+            "file": "color-nature-4.json",
+            "count": 32,
+            "levels": [
+                0,
+                10,
+                15,
+                7,
+                0
+            ]
+        },
+        {
+            "id": "color-objects-1",
+            "kind": "color",
+            "theme": "objects",
+            "volume": 1,
+            "title": {
+                "ko": "컬러 물건 1",
+                "en": "Color Objects 1"
+            },
+            "file": "color-objects-1.json",
+            "count": 35,
+            "levels": [
+                0,
+                12,
+                16,
+                7,
+                0
+            ]
+        },
+        {
+            "id": "color-objects-2",
+            "kind": "color",
+            "theme": "objects",
+            "volume": 2,
+            "title": {
+                "ko": "컬러 물건 2",
+                "en": "Color Objects 2"
+            },
+            "file": "color-objects-2.json",
+            "count": 35,
+            "levels": [
+                0,
+                12,
+                15,
+                7,
+                1
+            ]
+        },
+        {
+            "id": "color-objects-3",
+            "kind": "color",
+            "theme": "objects",
+            "volume": 3,
+            "title": {
+                "ko": "컬러 물건 3",
+                "en": "Color Objects 3"
+            },
+            "file": "color-objects-3.json",
+            "count": 35,
+            "levels": [
+                0,
+                12,
+                16,
+                7,
+                0
+            ]
+        },
+        {
+            "id": "color-objects-4",
+            "kind": "color",
+            "theme": "objects",
+            "volume": 4,
+            "title": {
+                "ko": "컬러 물건 4",
+                "en": "Color Objects 4"
+            },
+            "file": "color-objects-4.json",
+            "count": 35,
+            "levels": [
+                0,
+                11,
+                16,
+                8,
+                0
+            ]
+        },
+        {
+            "id": "color-objects-5",
+            "kind": "color",
+            "theme": "objects",
+            "volume": 5,
+            "title": {
+                "ko": "컬러 물건 5",
+                "en": "Color Objects 5"
+            },
+            "file": "color-objects-5.json",
+            "count": 35,
+            "levels": [
+                0,
+                12,
+                15,
+                8,
+                0
+            ]
+        },
+        {
+            "id": "color-objects-6",
+            "kind": "color",
+            "theme": "objects",
+            "volume": 6,
+            "title": {
+                "ko": "컬러 물건 6",
+                "en": "Color Objects 6"
+            },
+            "file": "color-objects-6.json",
+            "count": 35,
+            "levels": [
+                0,
+                13,
+                12,
+                9,
+                1
+            ]
+        },
+        {
+            "id": "color-people-1",
+            "kind": "color",
+            "theme": "people",
+            "volume": 1,
+            "title": {
+                "ko": "컬러 사람 1",
+                "en": "Color People 1"
+            },
+            "file": "color-people-1.json",
+            "count": 38,
+            "levels": [
+                0,
+                13,
+                15,
+                10,
+                0
+            ]
+        },
+        {
+            "id": "color-people-2",
+            "kind": "color",
+            "theme": "people",
+            "volume": 2,
+            "title": {
+                "ko": "컬러 사람 2",
+                "en": "Color People 2"
+            },
+            "file": "color-people-2.json",
+            "count": 38,
+            "levels": [
+                0,
+                12,
+                16,
+                10,
+                0
+            ]
+        },
+        {
+            "id": "color-people-3",
+            "kind": "color",
+            "theme": "people",
+            "volume": 3,
+            "title": {
+                "ko": "컬러 사람 3",
+                "en": "Color People 3"
+            },
+            "file": "color-people-3.json",
+            "count": 38,
+            "levels": [
+                0,
+                11,
+                18,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-people-4",
+            "kind": "color",
+            "theme": "people",
+            "volume": 4,
+            "title": {
+                "ko": "컬러 사람 4",
+                "en": "Color People 4"
+            },
+            "file": "color-people-4.json",
+            "count": 38,
+            "levels": [
+                0,
+                12,
+                17,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-people-5",
+            "kind": "color",
+            "theme": "people",
+            "volume": 5,
+            "title": {
+                "ko": "컬러 사람 5",
+                "en": "Color People 5"
+            },
+            "file": "color-people-5.json",
+            "count": 37,
+            "levels": [
+                0,
+                12,
+                15,
+                10,
+                0
+            ]
+        },
+        {
+            "id": "color-people-6",
+            "kind": "color",
+            "theme": "people",
+            "volume": 6,
+            "title": {
+                "ko": "컬러 사람 6",
+                "en": "Color People 6"
+            },
+            "file": "color-people-6.json",
+            "count": 37,
+            "levels": [
+                0,
+                13,
+                15,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-people-7",
+            "kind": "color",
+            "theme": "people",
+            "volume": 7,
+            "title": {
+                "ko": "컬러 사람 7",
+                "en": "Color People 7"
+            },
+            "file": "color-people-7.json",
+            "count": 37,
+            "levels": [
+                0,
+                13,
+                15,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-people-8",
+            "kind": "color",
+            "theme": "people",
+            "volume": 8,
+            "title": {
+                "ko": "컬러 사람 8",
+                "en": "Color People 8"
+            },
+            "file": "color-people-8.json",
+            "count": 37,
+            "levels": [
+                0,
+                13,
+                15,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-symbols-1",
+            "kind": "color",
+            "theme": "symbols",
+            "volume": 1,
+            "title": {
+                "ko": "컬러 기호 1",
+                "en": "Color Symbols 1"
+            },
+            "file": "color-symbols-1.json",
+            "count": 33,
+            "levels": [
+                0,
+                13,
+                11,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-symbols-2",
+            "kind": "color",
+            "theme": "symbols",
+            "volume": 2,
+            "title": {
+                "ko": "컬러 기호 2",
+                "en": "Color Symbols 2"
+            },
+            "file": "color-symbols-2.json",
+            "count": 33,
+            "levels": [
+                0,
+                12,
+                12,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-symbols-3",
+            "kind": "color",
+            "theme": "symbols",
+            "volume": 3,
+            "title": {
+                "ko": "컬러 기호 3",
+                "en": "Color Symbols 3"
+            },
+            "file": "color-symbols-3.json",
+            "count": 33,
+            "levels": [
+                0,
+                12,
+                12,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-symbols-4",
+            "kind": "color",
+            "theme": "symbols",
+            "volume": 4,
+            "title": {
+                "ko": "컬러 기호 4",
+                "en": "Color Symbols 4"
+            },
+            "file": "color-symbols-4.json",
+            "count": 32,
+            "levels": [
+                0,
+                12,
+                12,
+                8,
+                0
+            ]
+        },
+        {
+            "id": "color-symbols-5",
+            "kind": "color",
+            "theme": "symbols",
+            "volume": 5,
+            "title": {
+                "ko": "컬러 기호 5",
+                "en": "Color Symbols 5"
+            },
+            "file": "color-symbols-5.json",
+            "count": 32,
+            "levels": [
+                0,
+                12,
+                11,
+                9,
+                0
+            ]
+        },
+        {
+            "id": "color-travel-1",
+            "kind": "color",
+            "theme": "travel",
+            "volume": 1,
+            "title": {
+                "ko": "컬러 여행과 장소 1",
+                "en": "Color Travel & Places 1"
+            },
+            "file": "color-travel-1.json",
+            "count": 39,
+            "levels": [
+                0,
+                13,
+                13,
+                13,
+                0
+            ]
+        },
+        {
+            "id": "color-travel-2",
+            "kind": "color",
+            "theme": "travel",
+            "volume": 2,
+            "title": {
+                "ko": "컬러 여행과 장소 2",
+                "en": "Color Travel & Places 2"
+            },
+            "file": "color-travel-2.json",
+            "count": 39,
+            "levels": [
+                0,
+                12,
+                13,
+                14,
+                0
+            ]
+        },
+        {
+            "id": "color-travel-3",
+            "kind": "color",
+            "theme": "travel",
+            "volume": 3,
+            "title": {
+                "ko": "컬러 여행과 장소 3",
+                "en": "Color Travel & Places 3"
+            },
+            "file": "color-travel-3.json",
+            "count": 39,
+            "levels": [
+                0,
+                13,
+                14,
+                12,
+                0
+            ]
+        },
+        {
+            "id": "color-travel-4",
+            "kind": "color",
+            "theme": "travel",
+            "volume": 4,
+            "title": {
+                "ko": "컬러 여행과 장소 4",
+                "en": "Color Travel & Places 4"
+            },
+            "file": "color-travel-4.json",
+            "count": 38,
+            "levels": [
+                0,
+                12,
+                16,
+                10,
+                0
+            ]
+        },
+        {
+            "id": "color-travel-5",
+            "kind": "color",
+            "theme": "travel",
+            "volume": 5,
+            "title": {
+                "ko": "컬러 여행과 장소 5",
+                "en": "Color Travel & Places 5"
+            },
+            "file": "color-travel-5.json",
+            "count": 38,
+            "levels": [
+                0,
+                12,
+                15,
+                10,
+                1
+            ]
+        },
+        {
+            "id": "mono-activities-1",
+            "kind": "mono",
+            "theme": "activities",
+            "volume": 1,
+            "title": {
+                "ko": "활동 1",
+                "en": "Activities 1"
+            },
+            "file": "mono-activities-1.json",
+            "count": 26,
+            "levels": [
+                1,
+                8,
+                3,
+                8,
+                6
+            ]
+        },
+        {
+            "id": "mono-activities-2",
+            "kind": "mono",
+            "theme": "activities",
+            "volume": 2,
+            "title": {
+                "ko": "활동 2",
+                "en": "Activities 2"
+            },
+            "file": "mono-activities-2.json",
+            "count": 25,
+            "levels": [
+                0,
+                7,
+                10,
+                3,
+                5
+            ]
+        },
+        {
+            "id": "mono-faces-1",
+            "kind": "mono",
+            "theme": "faces",
+            "volume": 1,
+            "title": {
+                "ko": "표정 1",
+                "en": "Faces 1"
+            },
+            "file": "mono-faces-1.json",
+            "count": 39,
+            "levels": [
+                1,
+                3,
+                5,
+                11,
+                19
+            ]
+        },
+        {
+            "id": "mono-faces-2",
+            "kind": "mono",
+            "theme": "faces",
+            "volume": 2,
+            "title": {
+                "ko": "표정 2",
+                "en": "Faces 2"
+            },
+            "file": "mono-faces-2.json",
+            "count": 39,
+            "levels": [
+                1,
+                4,
+                3,
+                12,
+                19
+            ]
+        },
+        {
+            "id": "mono-food-1",
+            "kind": "mono",
+            "theme": "food",
+            "volume": 1,
+            "title": {
+                "ko": "음식 1",
+                "en": "Food & Drink 1"
+            },
+            "file": "mono-food-1.json",
+            "count": 39,
+            "levels": [
+                2,
+                8,
+                8,
+                10,
+                11
+            ]
+        },
+        {
+            "id": "mono-food-2",
+            "kind": "mono",
+            "theme": "food",
+            "volume": 2,
+            "title": {
+                "ko": "음식 2",
+                "en": "Food & Drink 2"
+            },
+            "file": "mono-food-2.json",
+            "count": 39,
+            "levels": [
+                1,
+                9,
+                9,
+                7,
+                13
+            ]
+        },
+        {
+            "id": "mono-nature-1",
+            "kind": "mono",
+            "theme": "nature",
+            "volume": 1,
+            "title": {
+                "ko": "동물과 자연 1",
+                "en": "Animals & Nature 1"
+            },
+            "file": "mono-nature-1.json",
+            "count": 38,
+            "levels": [
+                1,
+                6,
+                18,
+                10,
+                3
+            ]
+        },
+        {
+            "id": "mono-nature-2",
+            "kind": "mono",
+            "theme": "nature",
+            "volume": 2,
+            "title": {
+                "ko": "동물과 자연 2",
+                "en": "Animals & Nature 2"
+            },
+            "file": "mono-nature-2.json",
+            "count": 38,
+            "levels": [
+                0,
+                8,
+                12,
+                13,
+                5
+            ]
+        },
+        {
+            "id": "mono-objects-1",
+            "kind": "mono",
+            "theme": "objects",
+            "volume": 1,
+            "title": {
+                "ko": "물건 1",
+                "en": "Objects 1"
+            },
+            "file": "mono-objects-1.json",
+            "count": 37,
+            "levels": [
+                1,
+                10,
+                11,
+                10,
+                5
+            ]
+        },
+        {
+            "id": "mono-objects-2",
+            "kind": "mono",
+            "theme": "objects",
+            "volume": 2,
+            "title": {
+                "ko": "물건 2",
+                "en": "Objects 2"
+            },
+            "file": "mono-objects-2.json",
+            "count": 37,
+            "levels": [
+                0,
+                8,
+                14,
+                7,
+                8
+            ]
+        },
+        {
+            "id": "mono-objects-3",
+            "kind": "mono",
+            "theme": "objects",
+            "volume": 3,
+            "title": {
+                "ko": "물건 3",
+                "en": "Objects 3"
+            },
+            "file": "mono-objects-3.json",
+            "count": 37,
+            "levels": [
+                1,
+                5,
+                16,
+                9,
+                6
+            ]
+        },
+        {
+            "id": "mono-objects-4",
+            "kind": "mono",
+            "theme": "objects",
+            "volume": 4,
+            "title": {
+                "ko": "물건 4",
+                "en": "Objects 4"
+            },
+            "file": "mono-objects-4.json",
+            "count": 36,
+            "levels": [
+                0,
+                10,
+                13,
+                5,
+                8
+            ]
+        },
+        {
+            "id": "mono-people-1",
+            "kind": "mono",
+            "theme": "people",
+            "volume": 1,
+            "title": {
+                "ko": "사람 1",
+                "en": "People 1"
+            },
+            "file": "mono-people-1.json",
+            "count": 38,
+            "levels": [
+                2,
+                9,
+                11,
+                12,
+                4
+            ]
+        },
+        {
+            "id": "mono-people-2",
+            "kind": "mono",
+            "theme": "people",
+            "volume": 2,
+            "title": {
+                "ko": "사람 2",
+                "en": "People 2"
+            },
+            "file": "mono-people-2.json",
+            "count": 37,
+            "levels": [
+                2,
+                9,
+                15,
+                7,
+                4
+            ]
+        },
+        {
+            "id": "mono-people-3",
+            "kind": "mono",
+            "theme": "people",
+            "volume": 3,
+            "title": {
+                "ko": "사람 3",
+                "en": "People 3"
+            },
+            "file": "mono-people-3.json",
+            "count": 37,
+            "levels": [
+                0,
+                11,
+                13,
+                7,
+                6
+            ]
+        },
+        {
+            "id": "mono-people-4",
+            "kind": "mono",
+            "theme": "people",
+            "volume": 4,
+            "title": {
+                "ko": "사람 4",
+                "en": "People 4"
+            },
+            "file": "mono-people-4.json",
+            "count": 37,
+            "levels": [
+                1,
+                9,
+                13,
+                9,
+                5
+            ]
+        },
+        {
+            "id": "mono-people-5",
+            "kind": "mono",
+            "theme": "people",
+            "volume": 5,
+            "title": {
+                "ko": "사람 5",
+                "en": "People 5"
+            },
+            "file": "mono-people-5.json",
+            "count": 37,
+            "levels": [
+                1,
+                10,
+                12,
+                11,
+                3
+            ]
+        },
+        {
+            "id": "mono-symbols-1",
+            "kind": "mono",
+            "theme": "symbols",
+            "volume": 1,
+            "title": {
+                "ko": "기호 1",
+                "en": "Symbols 1"
+            },
+            "file": "mono-symbols-1.json",
+            "count": 38,
+            "levels": [
+                0,
+                3,
+                5,
+                21,
+                9
+            ]
+        },
+        {
+            "id": "mono-symbols-2",
+            "kind": "mono",
+            "theme": "symbols",
+            "volume": 2,
+            "title": {
+                "ko": "기호 2",
+                "en": "Symbols 2"
+            },
+            "file": "mono-symbols-2.json",
+            "count": 37,
+            "levels": [
+                1,
+                3,
+                3,
+                21,
+                9
+            ]
+        },
+        {
+            "id": "mono-symbols-3",
+            "kind": "mono",
+            "theme": "symbols",
+            "volume": 3,
+            "title": {
+                "ko": "기호 3",
+                "en": "Symbols 3"
+            },
+            "file": "mono-symbols-3.json",
+            "count": 37,
+            "levels": [
+                1,
+                2,
+                4,
+                20,
+                10
+            ]
+        },
+        {
+            "id": "mono-symbols-4",
+            "kind": "mono",
+            "theme": "symbols",
+            "volume": 4,
+            "title": {
+                "ko": "기호 4",
+                "en": "Symbols 4"
+            },
+            "file": "mono-symbols-4.json",
+            "count": 37,
+            "levels": [
+                0,
+                2,
+                8,
+                18,
+                9
+            ]
+        },
+        {
+            "id": "mono-travel-1",
+            "kind": "mono",
+            "theme": "travel",
+            "volume": 1,
+            "title": {
+                "ko": "여행과 장소 1",
+                "en": "Travel & Places 1"
+            },
+            "file": "mono-travel-1.json",
+            "count": 37,
+            "levels": [
+                2,
+                11,
+                11,
+                9,
+                4
+            ]
+        },
+        {
+            "id": "mono-travel-2",
+            "kind": "mono",
+            "theme": "travel",
+            "volume": 2,
+            "title": {
+                "ko": "여행과 장소 2",
+                "en": "Travel & Places 2"
+            },
+            "file": "mono-travel-2.json",
+            "count": 37,
+            "levels": [
+                3,
+                11,
+                9,
+                11,
+                3
+            ]
+        },
+        {
+            "id": "mono-travel-3",
+            "kind": "mono",
+            "theme": "travel",
+            "volume": 3,
+            "title": {
+                "ko": "여행과 장소 3",
+                "en": "Travel & Places 3"
+            },
+            "file": "mono-travel-3.json",
+            "count": 37,
+            "levels": [
+                2,
+                9,
+                11,
+                10,
+                5
+            ]
+        },
+        {
+            "id": "mono-travel-4",
+            "kind": "mono",
+            "theme": "travel",
+            "volume": 4,
+            "title": {
+                "ko": "여행과 장소 4",
+                "en": "Travel & Places 4"
+            },
+            "file": "mono-travel-4.json",
+            "count": 37,
+            "levels": [
+                2,
+                12,
+                6,
+                13,
+                4
+            ]
+        }
+    ],
+    "daily": {
+        "file": "daily.json",
+        "epoch": "2027-01-04",
+        "days": 401
+    },
+    "sources": [
+        {
+            "id": "fluent-emoji",
+            "name": "Microsoft Fluent Emoji",
+            "license": "MIT",
+            "url": "https://github.com/microsoft/fluentui-emoji",
+            "version": "1ffb34c752ecf5d402f04cfb4b392c77f57c54bc"
+        },
+        {
+            "id": "cldr",
+            "name": "Unicode CLDR (한국어 이모지 이름)",
+            "license": "Unicode-3.0",
+            "url": "https://github.com/unicode-org/cldr-json",
+            "version": "48.0.0"
+        }
+    ]
+}
