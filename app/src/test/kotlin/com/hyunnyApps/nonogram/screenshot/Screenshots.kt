@@ -1,5 +1,6 @@
 package com.hyunnyApps.nonogram.screenshot
 
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -52,6 +53,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.LocalDate
@@ -104,7 +106,8 @@ abstract class ScreenshotBase {
     protected fun game(id: String, source: String = "mono-nature-1", ink: Int = 0): GameViewModel {
         val vm = GameViewModel(SavedStateHandle(mapOf(GameViewModel.ARG_SOURCE to source, GameViewModel.ARG_PUZZLE_ID to id)), container)
         show(ink = ink) { GameScreen(container.rewarded, container.sound, true, {}, { _, _ -> }, vm) }
-        rule.waitUntil(60_000) { !vm.state.value.loading }
+        // IO 에서 돌아오는 Main 재개가 테스트 대기 루프에서 가끔 처리되지 않아 메인 루퍼를 직접 비운다
+        rule.waitUntil(60_000) { shadowOf(Looper.getMainLooper()).idle(); !vm.state.value.loading }
         return vm
     }
 
