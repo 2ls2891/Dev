@@ -1,56 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 기본 언어: 한국어. 영어는 values-en -->
 <resources>
-    <string name="app_name">Nonogram</string>
-    <string name="back">Back</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="error_load">Couldn\'t load the puzzle.</string>
+    <string name="app_name">노노그램</string>
+    <string name="app_tagline">숫자 단서로 숨은 그림을 완성하세요</string>
+    <string name="back">뒤로</string>
+    <string name="ok">확인</string>
+    <string name="cancel">취소</string>
+    <string name="help">도움말</string>
+    <string name="error_load">퍼즐을 불러오지 못했어요.</string>
 
-    <string name="home_daily_title">Today\'s puzzle</string>
-    <string name="home_daily_start">Start</string>
-    <string name="home_daily_continue">Continue</string>
-    <string name="home_daily_done">Solved</string>
-    <string name="home_streak">%1$d-day streak</string>
-    <string name="home_tab_mono">Classic</string>
-    <string name="home_tab_color">Color</string>
+    <string name="level_1">입문</string>
+    <string name="level_2">쉬움</string>
+    <string name="level_3">보통</string>
+    <string name="level_4">어려움</string>
+    <string name="level_5">전문가</string>
+    <string name="size_format">%1$d×%2$d</string>
+
+    <string name="stat_streak">연속</string>
+    <string name="stat_hints">힌트</string>
+    <string name="stat_completed">완성</string>
+    <string name="stat_days">%1$d일</string>
+    <string name="stat_count">%1$d개</string>
+
+    <string name="tutorial_card_title">처음이세요?</string>
+    <string name="tutorial_card_text">1분이면 규칙을 배울 수 있어요</string>
+    <string name="tutorial_card_button">배우기</string>
+
+    <string name="home_daily_title">오늘의 퍼즐</string>
+    <string name="date_pattern">M월 d일 EEEE</string>
+    <string name="home_daily_start">풀기</string>
+    <string name="home_daily_continue">이어서 풀기</string>
+    <string name="home_daily_done">완성! 그림 보기</string>
+    <string name="mode_mono_title">기본 퍼즐</string>
+    <string name="mode_mono_desc">칠할 칸과 빈칸을 찾아요</string>
+    <string name="mode_color_title">컬러 퍼즐</string>
+    <string name="mode_color_desc">숫자 색깔대로 칠해요</string>
+    <string name="section_count">%1$d개 퍼즐</string>
+    <string name="pack_volume">%1$d권</string>
     <string name="pack_progress">%1$d / %2$d</string>
+    <string name="pack_range">%1$s ~ %2$s</string>
+    <string name="pack_header_progress">%2$d개 중 %1$d개 완성</string>
+    <string name="tile_in_progress">진행 중</string>
 
-    <string name="game_puzzle_number">Puzzle #%1$d</string>
-    <string name="game_tool_fill">Fill</string>
-    <string name="game_tool_cross">Mark as empty</string>
-    <string name="game_completed">Solved!</string>
-    <string name="game_time">Time %1$s</string>
-    <string name="game_next">Next puzzle</string>
-    <string name="game_back_to_list">Back to list</string>
-    <string name="game_restart">Play again</string>
-    <string name="game_restart_confirm">Your progress on this puzzle will be cleared.</string>
+    <string name="game_puzzle_number">%1$d번</string>
+    <string name="game_tool_fill">칠하기</string>
+    <string name="game_tool_cross">빈칸 표시</string>
+    <string name="game_undo">되돌리기</string>
+    <string name="game_redo">다시 하기</string>
+    <string name="game_hint">힌트</string>
+    <string name="game_lines_done">완성한 줄 %1$d / %2$d</string>
+    <string name="game_coach">숫자는 그 줄에서 &lt;b&gt;연속으로 칠할 칸 수&lt;/b&gt;예요. 손가락으로 끌면 여러 칸을 한 번에 칠할 수 있어요.</string>
+    <string name="game_coach_zoom">큰 판은 두 손가락으로 확대할 수 있어요.</string>
+    <string name="game_completed">완성!</string>
+    <string name="game_time">걸린 시간</string>
+    <string name="game_hints_label">사용한 힌트</string>
+    <string name="game_next">다음 퍼즐</string>
+    <string name="game_back_to_list">목록으로</string>
+    <string name="game_restart">처음부터 다시 풀기</string>
+    <string name="game_restart_confirm">이 퍼즐의 진행 상황이 지워집니다.</string>
 
-    <string name="reward_title">Out of hints</string>
-    <string name="reward_watch">Watch ad</string>
-    <string name="reward_loading">Try (ad loading…)</string>
-    <string name="reward_not_ready">The ad isn\'t ready yet. Please try again shortly.</string>
+    <string name="reward_title">힌트를 다 썼어요</string>
+    <string name="reward_watch">광고 보고 받기</string>
+    <string name="reward_loading">광고 불러오는 중…</string>
+    <string name="reward_not_ready">광고가 아직 준비되지 않았어요. 잠시 후 다시 시도해 주세요.</string>
 
-    <string name="settings_title">Settings</string>
-    <string name="settings_privacy">Privacy &amp; ad consent</string>
-    <string name="settings_licenses">Open source licenses</string>
-    <string name="settings_version">Version %1$s</string>
-    <string name="settings_test_ads">Test ads (debug build)</string>
-    <string name="licenses_intro">This app uses the following open source software and content.</string>
+    <string name="rules_title">노노그램 규칙</string>
+    <string name="rules_1_title">숫자 = 연속으로 칠할 칸 수</string>
+    <string name="rules_1_text">줄 옆의 숫자 3은 그 줄에서 3칸을 이어서 칠한다는 뜻이에요.</string>
+    <string name="rules_2_title">숫자가 여러 개면 사이를 띄워요</string>
+    <string name="rules_2_text">2 1이면 2칸을 칠하고, 한 칸 이상 비운 뒤 1칸을 칠해요. 순서도 숫자 순서 그대로예요.</string>
+    <string name="rules_3_title">확실한 빈칸은 ✕로 표시</string>
+    <string name="rules_3_text">칠하면 안 되는 칸에 ✕를 해 두면 추리하기 쉬워져요. ✕는 정답 판정에 영향을 주지 않아요.</string>
+    <string name="rules_4_title">가로·세로 숫자를 모두 맞추면 완성</string>
+    <string name="rules_4_text">추리만으로 풀 수 있게 만들어져 있어서 찍을 필요가 없어요. 완성하면 숨은 컬러 그림이 나타나요!</string>
+    <string name="rules_color_title">컬러 퍼즐</string>
+    <string name="rules_color_text">숫자의 색깔이 칠할 색이에요. 색이 다른 묶음끼리는 붙어 있을 수도 있어요.</string>
 
-    <plurals name="home_hints">
-        <item quantity="one">%1$d hint</item>
-        <item quantity="other">%1$d hints</item>
-    </plurals>
-    <plurals name="game_hints_used">
-        <item quantity="one">%1$d hint</item>
-        <item quantity="other">%1$d hints</item>
-    </plurals>
+    <string name="tutorial_title">규칙 배우기</string>
+    <string name="tutorial_skip">건너뛰기</string>
+    <string name="tutorial_next">다음</string>
+    <string name="tutorial_intro_title">숫자로 그림을 그리는 퍼즐</string>
+    <string name="tutorial_intro_text">줄마다 적힌 숫자를 단서로 칸을 칠하면 숨은 그림이 나타나요.</string>
+    <string name="tutorial_practice_title">직접 풀어 볼까요?</string>
+    <string name="tutorial_practice_text">위쪽 숫자는 세로줄, 왼쪽 숫자는 가로줄의 단서예요. 5칸짜리 줄부터 칠해 보세요!</string>
+    <string name="tutorial_done_title">잘했어요! 🎉</string>
+    <string name="tutorial_done_button">퍼즐 시작하기</string>
+
+    <string name="settings_title">설정</string>
+    <string name="settings_privacy">개인정보 · 광고 동의 설정</string>
+    <string name="settings_rules">규칙 다시 보기</string>
+    <string name="settings_licenses">오픈소스 라이선스</string>
+    <string name="settings_version">버전 %1$s</string>
+    <string name="settings_test_ads">테스트 광고 사용 중 (디버그 빌드)</string>
+    <string name="licenses_intro">이 앱은 다음 오픈소스 소프트웨어와 콘텐츠를 사용합니다.</string>
+
     <plurals name="reward_text">
-        <item quantity="one">Watch a short ad to get %1$d hint. You also get 3 free hints every day.</item>
-        <item quantity="other">Watch a short ad to get %1$d hints. You also get 3 free hints every day.</item>
+        <item quantity="other">짧은 광고를 보면 힌트 %1$d개를 받아요. 매일 무료 힌트 3개도 채워져요.</item>
     </plurals>
     <plurals name="reward_granted">
-        <item quantity="one">You got %1$d hint!</item>
-        <item quantity="other">You got %1$d hints!</item>
+        <item quantity="other">힌트 %1$d개를 받았어요!</item>
     </plurals>
 </resources>

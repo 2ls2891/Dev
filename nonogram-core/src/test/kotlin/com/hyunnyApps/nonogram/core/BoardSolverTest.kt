@@ -77,3 +77,13 @@ class BoardSolverTest {
         }
     }
 }
+
+class TutorialPuzzleTest {
+    @Test
+    fun tutorialHeartIsLineSolvable() {
+        // app 의 TutorialScreen.TutorialHeart 와 동일해야 한다
+        val grid = Grid.fromRows(listOf(".1.1.", "11111", "11111", ".111.", "..1.."))
+        val r = BoardSolver(grid).solve(useProbing = false)
+        assertEquals(Outcome.SOLVED, r.outcome)
+    }
+}

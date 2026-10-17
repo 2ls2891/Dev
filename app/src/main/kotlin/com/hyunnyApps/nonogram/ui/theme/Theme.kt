@@ -1,39 +1,73 @@
 package com.hyunnyApps.nonogram.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
-private val Accent = Color(0xFF5B5BD6)
+// 디자인 원칙: 종이처럼 따뜻한 배경 + 잉크색 칸 + 인디고 포인트 하나. 장식보다 여백과 대비.
+private val Indigo = Color(0xFF4F46E5)
+private val Ink = Color(0xFF1E1B2E)
+private val Paper = Color(0xFFF5F2EB)
 
 private val Light = lightColorScheme(
-    primary = Accent,
+    primary = Indigo,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFE3E2FF),
-    onPrimaryContainer = Color(0xFF16137A),
-    secondary = Color(0xFFE8833A),
-    background = Color(0xFFFAF9FD),
-    surface = Color(0xFFFAF9FD),
-    surfaceVariant = Color(0xFFEDEBF4),
+    primaryContainer = Color(0xFFE4E2FF),
+    onPrimaryContainer = Color(0xFF221C8F),
+    secondary = Color(0xFFFF7A45),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFFFE6DA),
+    onSecondaryContainer = Color(0xFF7A2E0E),
+    tertiary = Color(0xFF16A36A),
+    background = Paper,
+    onBackground = Ink,
+    surface = Color.White,
+    onSurface = Ink,
+    surfaceVariant = Color(0xFFEDE8DE),
+    onSurfaceVariant = Color(0xFF5E5869),
+    surfaceContainerLow = Color(0xFFFAF8F3),
+    surfaceContainer = Color.White,
+    surfaceContainerHigh = Color.White,
+    outline = Color(0xFFCFC8BA),
+    outlineVariant = Color(0xFFE3DDD1),
 )
 
 private val Dark = darkColorScheme(
-    primary = Color(0xFFC2C1FF),
-    onPrimary = Color(0xFF221E8F),
-    primaryContainer = Color(0xFF3B3AA6),
-    onPrimaryContainer = Color(0xFFE3E2FF),
-    secondary = Color(0xFFFFB68A),
-    background = Color(0xFF131318),
-    surface = Color(0xFF131318),
-    surfaceVariant = Color(0xFF2A2A33),
+    primary = Color(0xFFA5A1FF),
+    onPrimary = Color(0xFF1C168A),
+    primaryContainer = Color(0xFF3730A3),
+    onPrimaryContainer = Color(0xFFE4E2FF),
+    secondary = Color(0xFFFF9A6B),
+    onSecondary = Color(0xFF4A1A05),
+    secondaryContainer = Color(0xFF5C2A12),
+    onSecondaryContainer = Color(0xFFFFDCCB),
+    tertiary = Color(0xFF4ADE9B),
+    background = Color(0xFF131218),
+    onBackground = Color(0xFFECE9F5),
+    surface = Color(0xFF1D1C24),
+    onSurface = Color(0xFFECE9F5),
+    surfaceVariant = Color(0xFF29272F),
+    onSurfaceVariant = Color(0xFFB9B4C6),
+    surfaceContainerLow = Color(0xFF18171E),
+    surfaceContainer = Color(0xFF1D1C24),
+    surfaceContainerHigh = Color(0xFF24232C),
+    outline = Color(0xFF4A4756),
+    outlineVariant = Color(0xFF34323D),
 )
 
-/** 보드 전용 색. 흑백 퍼즐의 채움색은 테마에 맞춰 바꾸고, 컬러 퍼즐은 팔레트 색을 그대로 쓴다 */
+/** 보드 전용 색. 흑백 퍼즐 채움색은 테마에 맞추고, 컬러 퍼즐은 팔레트 색을 그대로 쓴다 */
 @Immutable
 data class BoardColors(
     val background: Color,
@@ -43,39 +77,75 @@ data class BoardColors(
     val cross: Color,
     val clueText: Color,
     val clueDone: Color,
-    val highlight: Color,
     val clueBackground: Color,
+    val activeLine: Color,
+    val activeClue: Color,
+    val highlight: Color,
 )
 
 private val LightBoard = BoardColors(
     background = Color.White,
-    gridLine = Color(0xFFD5D3E0),
-    gridLineBold = Color(0xFF8E8BA3),
-    monoFill = Color(0xFF26243A),
-    cross = Color(0xFFA09DB5),
-    clueText = Color(0xFF26243A),
-    clueDone = Color(0xFFBDBACB),
-    highlight = Accent,
-    clueBackground = Color(0xFFF3F2F9),
+    gridLine = Color(0xFFE2DDD2),
+    gridLineBold = Color(0xFF9C9587),
+    monoFill = Ink,
+    cross = Color(0xFFB4AEA2),
+    clueText = Ink,
+    clueDone = Color(0xFFC9C3B7),
+    clueBackground = Color(0xFFF5F2EB),
+    activeLine = Color(0x144F46E5),
+    activeClue = Color(0x334F46E5),
+    highlight = Color(0xFFFF7A45),
 )
 
 private val DarkBoard = BoardColors(
-    background = Color(0xFF1C1C24),
-    gridLine = Color(0xFF3A3947),
-    gridLineBold = Color(0xFF6E6C82),
-    monoFill = Color(0xFFE6E4F2),
-    cross = Color(0xFF77758A),
-    clueText = Color(0xFFE6E4F2),
-    clueDone = Color(0xFF55536A),
-    highlight = Color(0xFFC2C1FF),
-    clueBackground = Color(0xFF24242E),
+    background = Color(0xFF1D1C24),
+    gridLine = Color(0xFF34323D),
+    gridLineBold = Color(0xFF6E6A7C),
+    monoFill = Color(0xFFECE9F5),
+    cross = Color(0xFF6E6A7C),
+    clueText = Color(0xFFECE9F5),
+    clueDone = Color(0xFF4F4C5B),
+    clueBackground = Color(0xFF18171E),
+    activeLine = Color(0x1FA5A1FF),
+    activeClue = Color(0x40A5A1FF),
+    highlight = Color(0xFFFF9A6B),
+)
+
+/** 난이도 1~5 색 (입문 → 전문가) */
+val LevelColors = listOf(
+    Color(0xFF16A36A),
+    Color(0xFF1E88E5),
+    Color(0xFF6D5BD0),
+    Color(0xFFF08A24),
+    Color(0xFFE5484D),
 )
 
 val LocalBoardColors = staticCompositionLocalOf { LightBoard }
 
+private val AppTypography = Typography().let { t ->
+    t.copy(
+        headlineLarge = t.headlineLarge.copy(fontWeight = FontWeight.ExtraBold, fontSize = 30.sp, letterSpacing = (-0.5).sp),
+        headlineSmall = t.headlineSmall.copy(fontWeight = FontWeight.Bold),
+        titleLarge = t.titleLarge.copy(fontWeight = FontWeight.Bold),
+        titleMedium = t.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+        labelLarge = t.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+    )
+}
+
+private val AppShapes = Shapes(
+    small = RoundedCornerShape(10.dp),
+    medium = RoundedCornerShape(16.dp),
+    large = RoundedCornerShape(24.dp),
+)
+
 @Composable
 fun NonogramTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    androidx.compose.runtime.CompositionLocalProvider(LocalBoardColors provides if (dark) DarkBoard else LightBoard) {
-        MaterialTheme(colorScheme = if (dark) Dark else Light, content = content)
+    CompositionLocalProvider(LocalBoardColors provides if (dark) DarkBoard else LightBoard) {
+        MaterialTheme(
+            colorScheme = if (dark) Dark else Light,
+            typography = AppTypography,
+            shapes = AppShapes,
+            content = content,
+        )
     }
 }

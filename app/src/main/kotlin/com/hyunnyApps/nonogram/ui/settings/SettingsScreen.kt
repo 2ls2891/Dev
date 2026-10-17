@@ -37,7 +37,7 @@ import com.hyunnyApps.nonogram.ads.ConsentManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(consent: ConsentManager, onBack: () -> Unit, onOpenLicenses: () -> Unit) {
+fun SettingsScreen(consent: ConsentManager, onBack: () -> Unit, onOpenRules: () -> Unit, onOpenLicenses: () -> Unit) {
     val activity = LocalActivity.current
     val privacyRequired by consent.privacyOptionsRequired.collectAsStateWithLifecycle()
     Scaffold(
@@ -53,6 +53,11 @@ fun SettingsScreen(consent: ConsentManager, onBack: () -> Unit, onOpenLicenses: 
                 )
                 HorizontalDivider()
             }
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.settings_rules)) },
+                modifier = Modifier.clickable(onClick = onOpenRules),
+            )
+            HorizontalDivider()
             ListItem(
                 headlineContent = { Text(stringResource(R.string.settings_licenses)) },
                 modifier = Modifier.clickable(onClick = onOpenLicenses),

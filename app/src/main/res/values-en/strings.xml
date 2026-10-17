@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nonogram</string>
+    <string name="app_tagline">Use the number clues to reveal hidden pictures</string>
+    <string name="back">Back</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="help">Help</string>
+    <string name="error_load">Couldn\'t load the puzzle.</string>
+
+    <string name="level_1">Starter</string>
+    <string name="level_2">Easy</string>
+    <string name="level_3">Medium</string>
+    <string name="level_4">Hard</string>
+    <string name="level_5">Expert</string>
+    <string name="size_format">%1$d×%2$d</string>
+
+    <string name="stat_streak">Streak</string>
+    <string name="stat_hints">Hints</string>
+    <string name="stat_completed">Solved</string>
+    <string name="stat_days">%1$d d</string>
+    <string name="stat_count">%1$d</string>
+
+    <string name="tutorial_card_title">New here?</string>
+    <string name="tutorial_card_text">Learn the rules in a minute</string>
+    <string name="tutorial_card_button">Learn</string>
+
+    <string name="home_daily_title">Today\'s puzzle</string>
+    <string name="date_pattern">EEEE, MMM d</string>
+    <string name="home_daily_start">Play</string>
+    <string name="home_daily_continue">Continue</string>
+    <string name="home_daily_done">Solved! View picture</string>
+    <string name="mode_mono_title">Classic</string>
+    <string name="mode_mono_desc">Find filled and empty cells</string>
+    <string name="mode_color_title">Color</string>
+    <string name="mode_color_desc">Fill with the clue colors</string>
+    <string name="section_count">%1$d puzzles</string>
+    <string name="pack_volume">Vol. %1$d</string>
+    <string name="pack_progress">%1$d / %2$d</string>
+    <string name="pack_range">%1$s – %2$s</string>
+    <string name="pack_header_progress">%1$d of %2$d solved</string>
+    <string name="tile_in_progress">In progress</string>
+
+    <string name="game_puzzle_number">No. %1$d</string>
+    <string name="game_tool_fill">Fill</string>
+    <string name="game_tool_cross">Mark empty</string>
+    <string name="game_undo">Undo</string>
+    <string name="game_redo">Redo</string>
+    <string name="game_hint">Hint</string>
+    <string name="game_lines_done">Lines done %1$d / %2$d</string>
+    <string name="game_coach">Each number is &lt;b&gt;a run of filled cells&lt;/b&gt; in that line. Drag to fill many cells at once.</string>
+    <string name="game_coach_zoom">Pinch with two fingers to zoom big boards.</string>
+    <string name="game_completed">Solved!</string>
+    <string name="game_time">Time</string>
+    <string name="game_hints_label">Hints used</string>
+    <string name="game_next">Next puzzle</string>
+    <string name="game_back_to_list">Back to list</string>
+    <string name="game_restart">Start over</string>
+    <string name="game_restart_confirm">Your progress on this puzzle will be cleared.</string>
+
+    <string name="reward_title">Out of hints</string>
+    <string name="reward_watch">Watch ad</string>
+    <string name="reward_loading">Loading ad…</string>
+    <string name="reward_not_ready">The ad isn\'t ready yet. Please try again shortly.</string>
+
+    <string name="rules_title">How to play</string>
+    <string name="rules_1_title">Number = run of filled cells</string>
+    <string name="rules_1_text">A 3 next to a line means 3 cells in a row are filled in that line.</string>
+    <string name="rules_2_title">Several numbers need gaps</string>
+    <string name="rules_2_text">2 1 means a run of 2, at least one empty cell, then a run of 1 — in that order.</string>
+    <string name="rules_3_title">Mark sure-empty cells with ✕</string>
+    <string name="rules_3_text">Crosses help your reasoning. They don\'t affect the solution check.</string>
+    <string name="rules_4_title">Match every row and column</string>
+    <string name="rules_4_text">Every puzzle can be solved by logic alone — no guessing. A hidden color picture appears when you finish!</string>
+    <string name="rules_color_title">Color puzzles</string>
+    <string name="rules_color_text">The clue color is the color to fill. Runs of different colors may touch.</string>
+
+    <string name="tutorial_title">Learn the rules</string>
+    <string name="tutorial_skip">Skip</string>
+    <string name="tutorial_next">Next</string>
+    <string name="tutorial_intro_title">Draw pictures with numbers</string>
+    <string name="tutorial_intro_text">Fill cells using the numbers on each line as clues, and a hidden picture appears.</string>
+    <string name="tutorial_practice_title">Try it yourself</string>
+    <string name="tutorial_practice_text">Top numbers are for columns, left numbers for rows. Start with the lines of 5!</string>
+    <string name="tutorial_done_title">Great job! 🎉</string>
+    <string name="tutorial_done_button">Start playing</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_privacy">Privacy &amp; ad consent</string>
+    <string name="settings_rules">How to play</string>
+    <string name="settings_licenses">Open source licenses</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_test_ads">Test ads (debug build)</string>
+    <string name="licenses_intro">This app uses the following open source software and content.</string>
+
+    <plurals name="reward_text">
+        <item quantity="one">Watch a short ad to get %1$d hint. You also get 3 free hints every day.</item>
+        <item quantity="other">Watch a short ad to get %1$d hints. You also get 3 free hints every day.</item>
+    </plurals>
+    <plurals name="reward_granted">
+        <item quantity="one">You got %1$d hint!</item>
+        <item quantity="other">You got %1$d hints!</item>
+    </plurals>
+</resources>

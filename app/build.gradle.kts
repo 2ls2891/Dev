@@ -82,6 +82,22 @@ android {
         buildConfig = true
     }
 
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            all {
+                // 화면 스냅샷(Roborazzi): JVM에서 실제 Compose 렌더링
+                it.systemProperty("robolectric.graphicsMode", "NATIVE")
+                it.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+                it.systemProperty("roborazzi.test.record", "true")
+                it.systemProperty("roborazzi.output.dir", rootProject.file("docs/screenshots").absolutePath)
+                it.maxHeapSize = "4g"
+                // Robolectric 테스트끼리 메인 디스패처 상태가 섞이지 않도록 테스트 클래스마다 새 JVM
+                it.forkEvery = 1
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -158,4 +174,11 @@ dependencies {
 
     // Android 단위 테스트는 JUnit4 러너를 쓴다 (kotlin.test 애너테이션 → org.junit)
     testImplementation(kotlin("test-junit"))
+    testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
+    testImplementation(libs.compose.ui.test.junit4)
+    testImplementation(libs.androidx.test.ext.junit)
+    debugImplementation(libs.compose.ui.test.manifest)
 }

@@ -64,6 +64,10 @@ data class GameUiState(
     val hints: Int = 0,
     val hintsUsed: Int = 0,
     val lastHint: Hint? = null,
+    /** 드래그 중인 칸 (해당 행·열 강조용). 없으면 -1 */
+    val activeCell: Int = -1,
+    /** 아직 한 퍼즐도 완성하지 않은 사용자 → 안내 문구 표시 */
+    val firstTimer: Boolean = false,
     val rewardOfferVisible: Boolean = false,
     val rewardedReady: Boolean = false,
     val elapsedMs: Long = 0,
@@ -113,6 +117,9 @@ class GameViewModel(
     init {
         viewModelScope.launch { load() }
         viewModelScope.launch { container.player.hints.collect { n -> _state.update { it.copy(hints = n) } } }
+        viewModelScope.launch {
+            container.progress.statuses.collect { st -> _state.update { it.copy(firstTimer = st.values.none { s -> s.completed }) } }
+        }
         viewModelScope.launch {
             container.rewarded.state.collect { s -> _state.update { it.copy(rewardedReady = s == RewardedState.READY) } }
         }
@@ -193,6 +200,7 @@ class GameViewModel(
     fun onStrokeStart(index: Int) {
         val s = editable() ?: return
         s.beginStroke(index, _state.value.tool)
+        _state.update { it.copy(activeCell = index) }
         publishBoard()
     }
 
@@ -201,17 +209,20 @@ class GameViewModel(
         if (!s.isStroking) return
         val before = s.version
         s.extendStroke(index)
+        if (_state.value.activeCell != index) _state.update { it.copy(activeCell = index) }
         if (s.version != before) publishBoard()
     }
 
     fun onStrokeEnd() {
         val s = editable() ?: return
+        _state.update { it.copy(activeCell = -1) }
         if (s.endStroke()) afterChange() else publishBoard()
     }
 
     fun onStrokeCancel() {
         val s = session ?: return
         s.cancelStroke()
+        _state.update { it.copy(activeCell = -1) }
         publishBoard()
     }
 

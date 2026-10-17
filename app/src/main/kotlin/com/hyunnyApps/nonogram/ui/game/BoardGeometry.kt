@@ -50,7 +50,8 @@ class BoardGeometry(
     val boardWidth = leftArea + columns * baseCell
     val boardHeight = topArea + rows * baseCell
     val originX = ((viewportWidth - boardWidth) / 2).coerceAtLeast(0f)
-    val originY = ((viewportHeight - boardHeight) / 2).coerceAtLeast(0f)
+    /** 위쪽 정렬 (보드 아래에 진행 상황·안내를 붙이기 위해) */
+    val originY = 0f
 
     /** 격자가 보이는 영역 (고정) */
     val gridLeft = originX + leftArea

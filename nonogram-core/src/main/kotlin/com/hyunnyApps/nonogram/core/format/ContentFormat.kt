@@ -69,6 +69,8 @@ data class PackSummary(
     val count: Int,
     /** 레벨 1~5별 퍼즐 수 */
     val levels: List<Int>,
+    /** 팩 표지 그림 (팩에서 가장 어려운 퍼즐의 클리어 그림 → "여기까지 완성해 보세요") */
+    val cover: Picture? = null,
 )
 
 @Serializable

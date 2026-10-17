@@ -91,6 +91,7 @@ scripts/run-android.sh          # SDK 설치 → 에뮬레이터 생성·부팅 
 | `scripts/run-android.sh --wipe` | 에뮬레이터 초기화 후 실행 (첫 실행 상태) |
 | `scripts/run-android.sh --device` | USB로 연결한 실기기에 설치 |
 | `scripts/run-android.sh --stop` | 에뮬레이터 종료 |
+| `scripts/run-android.sh --lang en` | 앱을 영어로 보기 (기본은 한국어. 기기 언어는 그대로) |
 
 코드를 고친 뒤에는 같은 명령을 다시 실행하면 된다.
 
@@ -99,6 +100,15 @@ scripts/run-android.sh          # SDK 설치 → 에뮬레이터 생성·부팅 
 
 디버그 빌드는 Google 테스트 광고가 나온다 (배너에 "Test Ad" 표시).
 Python·콘텐츠 도구는 필요 없다 (생성된 퍼즐이 `content/packs/`에 커밋되어 있음).
+
+## 화면 스냅샷 (디자인 검토)
+
+에뮬레이터 없이 JVM(Robolectric)에서 실제 화면을 렌더링해 `docs/screenshots/`에 저장한다.
+```bash
+./gradlew :app:testDebugUnitTest      # 단위 테스트 + 화면 스냅샷 갱신
+```
+시나리오는 `app/src/test/.../screenshot/Screenshots.kt` (홈, 팩, 게임 진행/완료, 컬러, 튜토리얼, 규칙).
+화면을 바꾸면 스냅샷도 함께 커밋해 변경 전후를 비교한다.
 
 ## 출시 전 체크리스트
 - [x] `applicationId` = `com.hyunnyApps.nonogram` (디버그: `com.hyunnyApps.nonogram.debug`)

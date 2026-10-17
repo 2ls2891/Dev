@@ -239,6 +239,7 @@ fun build(cfg: BuildConfig): BuildReport {
                 file = "${p.id}.json",
                 count = p.puzzles.size,
                 levels = (1..5).map { l -> p.puzzles.count { it.difficulty.level == l } },
+                cover = p.puzzles.lastOrNull()?.reveal,
             )
         },
         daily = DailySummary("daily.json", daily.epoch, daily.puzzles.size),

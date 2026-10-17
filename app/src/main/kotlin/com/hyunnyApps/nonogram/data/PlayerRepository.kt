@@ -1,6 +1,7 @@
 package com.hyunnyApps.nonogram.data
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -22,6 +23,13 @@ class PlayerRepository(context: Context) {
 
     val streak: Flow<Streak> = store.data.map {
         Streak(it[STREAK_CURRENT] ?: 0, it[STREAK_BEST] ?: 0, it[STREAK_LAST_DAY])
+    }
+
+    /** 튜토리얼을 한 번이라도 열었는지 (첫 실행 시 자동으로 한 번만 보여준다) */
+    val tutorialSeen: Flow<Boolean> = store.data.map { it[TUTORIAL_SEEN] == true }
+
+    suspend fun markTutorialSeen() {
+        store.edit { it[TUTORIAL_SEEN] = true }
     }
 
     /** 날짜가 바뀌었으면 무료 힌트를 채운다 (이미 그 이상이면 유지) */
@@ -70,5 +78,6 @@ class PlayerRepository(context: Context) {
         private val STREAK_CURRENT = intPreferencesKey("streak_current")
         private val STREAK_BEST = intPreferencesKey("streak_best")
         private val STREAK_LAST_DAY = longPreferencesKey("streak_last_day")
+        private val TUTORIAL_SEEN = booleanPreferencesKey("tutorial_seen")
     }
 }

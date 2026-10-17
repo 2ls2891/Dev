@@ -1,26 +1,43 @@
 package com.hyunnyApps.nonogram.ui.components
 
-import androidx.compose.material3.LocalContentColor
+import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.hyunnyApps.nonogram.R
+import com.hyunnyApps.nonogram.ui.theme.LevelColors
 
-/** 난이도 1~5 별 표시 */
+@StringRes
+fun levelName(level: Int): Int = when (level.coerceIn(1, 5)) {
+    1 -> R.string.level_1
+    2 -> R.string.level_2
+    3 -> R.string.level_3
+    4 -> R.string.level_4
+    else -> R.string.level_5
+}
+
+fun levelColor(level: Int): Color = LevelColors[level.coerceIn(1, 5) - 1]
+
+/** 난이도를 말로 보여주는 작은 칩 (예: "보통") */
 @Composable
-fun DifficultyStars(level: Int, modifier: Modifier = Modifier) {
-    val on = MaterialTheme.colorScheme.secondary
-    val off = LocalContentColor.current.copy(alpha = 0.25f)
+fun LevelChip(level: Int, modifier: Modifier = Modifier, onDark: Boolean = false) {
+    val color = levelColor(level)
     Text(
-        buildAnnotatedString {
-            withStyle(SpanStyle(color = on)) { append("★".repeat(level.coerceIn(0, 5))) }
-            withStyle(SpanStyle(color = off)) { append("★".repeat(5 - level.coerceIn(0, 5))) }
-        },
-        modifier = modifier,
+        stringResource(levelName(level)),
+        modifier = modifier
+            .background(if (onDark) Color.White.copy(alpha = 0.2f) else color.copy(alpha = 0.14f), RoundedCornerShape(50))
+            .padding(horizontal = 8.dp, vertical = 2.dp),
+        color = if (onDark) Color.White else color,
         style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
     )
 }
 

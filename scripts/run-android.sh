@@ -8,6 +8,7 @@
 #   scripts/run-android.sh --device   에뮬레이터 대신 USB로 연결된 실기기에 설치
 #   scripts/run-android.sh --wipe     에뮬레이터 데이터 초기화 후 부팅 (앱 첫 실행 상태 확인용)
 #   scripts/run-android.sh --stop     실행 중인 에뮬레이터 종료
+#   scripts/run-android.sh --lang en  앱 언어를 영어로 (기본: 한국어. 기기 언어와 관계없이 앱에만 적용)
 set -euo pipefail
 
 APP_ID="com.hyunnyApps.nonogram.debug"
@@ -24,19 +25,26 @@ CLT_LINUX_ZIP="commandlinetools-linux-16111833_latest.zip"
 CLT_LINUX_SHA1="e025545c62a8e64c7559119566a569fb1dec5f60"
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-USE_DEVICE=0; WIPE=0; LOGS=0; GRADLE_EXTRA=()
+USE_DEVICE=0; WIPE=0; LOGS=0; GRADLE_EXTRA=(); LANG_TAG="ko-KR"
 
+prev=""
 for arg in "$@"; do
+  if [ "$prev" = "--lang" ]; then
+    case "$arg" in ko) LANG_TAG="ko-KR" ;; en) LANG_TAG="en-US" ;; *) LANG_TAG="$arg" ;; esac
+    prev=""; continue
+  fi
   case "$arg" in
+    --lang) prev="--lang" ;;
     --device) USE_DEVICE=1 ;;
     --wipe) WIPE=1 ;;
     --logs) LOGS=1 ;;
     --eea) GRADLE_EXTRA+=("-Pump.debugEea=true") ;;
     --stop) STOP=1 ;;
-    -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) awk 'NR>1 && /^#/ {sub(/^# ?/, ""); print; next} NR>1 {exit}' "$0"; exit 0 ;;
     *) echo "알 수 없는 옵션: $arg (도움말: --help)" >&2; exit 2 ;;
   esac
 done
+[ -z "$prev" ] || { echo "--lang 뒤에 언어를 지정하세요 (ko 또는 en)" >&2; exit 2; }
 
 info() { printf '\033[1;34m▶ %s\033[0m\n' "$*"; }
 fail() { printf '\033[1;31m✖ %s\033[0m\n' "$*" >&2; exit 1; }
@@ -239,6 +247,12 @@ export ANDROID_SERIAL="$SERIAL"
 info "빌드 및 설치 → $SERIAL"
 (cd "$ROOT" && ./gradlew :app:installDebug ${GRADLE_EXTRA[@]+"${GRADLE_EXTRA[@]}"} --console=plain -q)
 "$ADB" -s "$SERIAL" shell am force-stop "$APP_ID" >/dev/null 2>&1 || true
+# 앱별 언어 (Android 13+). 기기 언어를 바꾸지 않고 이 앱만 한국어/영어로 본다
+sdk_int="$("$ADB" -s "$SERIAL" shell getprop ro.build.version.sdk | tr -d '\r')"
+if [ "${sdk_int:-0}" -ge 33 ]; then
+  "$ADB" -s "$SERIAL" shell cmd locale set-app-locales "$APP_ID" --locales "$LANG_TAG" >/dev/null 2>&1 \
+    || printf '\033[1;33m! 앱 언어 설정 실패 — 기기 언어를 따릅니다\033[0m\n'
+fi
 "$ADB" -s "$SERIAL" shell am start -n "$APP_ID/$ACTIVITY" >/dev/null
 info "실행 완료: $APP_ID ($SERIAL)"
 

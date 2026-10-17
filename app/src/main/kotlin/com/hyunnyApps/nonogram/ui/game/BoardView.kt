@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.calculateCentroid
 import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -55,6 +56,7 @@ fun BoardView(
     palette: List<Color>,
     isColor: Boolean,
     highlight: Hint?,
+    activeCell: Int,
     enabled: Boolean,
     onStrokeStart: (Int) -> Unit,
     onStrokeMove: (Int) -> Unit,
@@ -94,9 +96,11 @@ fun BoardView(
         val end by rememberUpdatedState(onStrokeEnd)
         val cancel by rememberUpdatedState(onStrokeCancel)
 
+        val boardWidthDp = with(density) { widthPx.toDp() }
+        val boardHeightDp = with(density) { base.boardHeight.toDp() }
         Canvas(
             Modifier
-                .matchParentSize()
+                .size(boardWidthDp, boardHeightDp)
                 .pointerInput(puzzleKey) {
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false)
@@ -137,7 +141,7 @@ fun BoardView(
                     }
                 }
         ) {
-            drawBoard(geometry, rowClues, colClues, board, palette, isColor, highlight, colors, texts)
+            drawBoard(geometry, rowClues, colClues, board, palette, isColor, highlight, activeCell, colors, texts)
         }
     }
 }
@@ -165,9 +169,12 @@ private fun DrawScope.drawBoard(
     palette: List<Color>,
     isColor: Boolean,
     highlight: Hint?,
+    activeCell: Int,
     colors: BoardColors,
     texts: TextCache,
 ) {
+    val activeRow = if (activeCell >= 0) activeCell / g.columns else -1
+    val activeCol = if (activeCell >= 0) activeCell % g.columns else -1
     fun fillColor(value: Int) = if (isColor) palette.getOrElse(value - 1) { colors.monoFill } else colors.monoFill
 
     val cell = g.cell
@@ -179,6 +186,12 @@ private fun DrawScope.drawBoard(
     // ---- 격자 ----
     clipRect(g.gridLeft, g.gridTop, g.gridLeft + g.gridWidth, g.gridTop + g.gridHeight) {
         drawRect(colors.background, Offset(g.gridLeft, g.gridTop), Size(g.gridWidth, g.gridHeight))
+
+        // 손가락이 있는 행·열 강조 (어느 단서를 보고 있는지 바로 보이게)
+        if (activeRow >= 0) {
+            drawRect(colors.activeLine, Offset(g.gridLeft, g.cellTop(activeRow)), Size(g.gridWidth, cell))
+            drawRect(colors.activeLine, Offset(g.cellLeft(activeCol), g.gridTop), Size(cell, g.gridHeight))
+        }
 
         if (highlight is Hint.Deduce) {
             val band = colors.highlight.copy(alpha = 0.12f)
@@ -245,6 +258,7 @@ private fun DrawScope.drawBoard(
     // 왼쪽(행) 단서: 오른쪽 정렬
     clipRect(g.originX, g.gridTop, g.gridLeft, g.gridTop + g.gridHeight) {
         drawRect(colors.clueBackground, Offset(g.originX, g.gridTop), Size(g.leftArea, g.gridHeight))
+        if (activeRow >= 0) drawRect(colors.activeClue, Offset(g.originX, g.cellTop(activeRow)), Size(g.leftArea, cell))
         val fontPx = minOf(slot, cell) * 0.6f
         for (r in r0..r1) {
             val items = rowClues[r].items()
@@ -257,6 +271,7 @@ private fun DrawScope.drawBoard(
     // 위쪽(열) 단서: 아래 정렬
     clipRect(g.gridLeft, g.originY, g.gridLeft + g.gridWidth, g.gridTop) {
         drawRect(colors.clueBackground, Offset(g.gridLeft, g.originY), Size(g.gridWidth, g.topArea))
+        if (activeCol >= 0) drawRect(colors.activeClue, Offset(g.cellLeft(activeCol), g.originY), Size(cell, g.topArea))
         val fontPx = minOf(slot, cell) * 0.6f
         for (c in c0..c1) {
             val items = colClues[c].items()

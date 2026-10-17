@@ -6,12 +6,6 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import com.hyunnyApps.nonogram.AppContainer
 import com.hyunnyApps.nonogram.NonogramApplication
 import com.hyunnyApps.nonogram.core.daily.DailyCalendar
@@ -20,6 +14,12 @@ import com.hyunnyApps.nonogram.core.format.IndexOut
 import com.hyunnyApps.nonogram.core.format.Localized
 import com.hyunnyApps.nonogram.core.format.PackSummary
 import com.hyunnyApps.nonogram.core.format.PuzzleOut
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 data class DailyItem(
@@ -31,14 +31,15 @@ data class DailyItem(
 
 data class PackItem(val summary: PackSummary, val completed: Int)
 
-data class ThemeSection(val theme: String, val title: Localized, val packs: List<PackItem>)
+data class ThemeSection(val theme: String, val title: Localized, val packs: List<PackItem>, val puzzleCount: Int)
 
 data class HomeUiState(
     val loading: Boolean = true,
     val daily: DailyItem? = null,
     val streak: Int = 0,
-    val bestStreak: Int = 0,
     val hints: Int = 0,
+    val completedTotal: Int = 0,
+    val tutorialSeen: Boolean = true,
     val kind: String = KIND_MONO,
     val sections: List<ThemeSection> = emptyList(),
 )
@@ -49,17 +50,18 @@ const val KIND_COLOR = "color"
 /** 테마 표시 순서 (첫 화면에서 친숙한 것부터) */
 private val THEME_ORDER = listOf("nature", "food", "faces", "objects", "activities", "travel", "people", "symbols")
 
+private data class PlayerSnapshot(val hints: Int, val streak: Int, val tutorialSeen: Boolean)
+
 class HomeViewModel(private val container: AppContainer) : ViewModel() {
     private val kind = MutableStateFlow(KIND_MONO)
     private val content = MutableStateFlow<Pair<IndexOut, DailyOut>?>(null)
 
-    val state: StateFlow<HomeUiState> = combine(
-        content,
-        kind,
-        container.progress.statuses,
-        container.player.hints,
-        container.player.streak,
-    ) { loaded, kind, statuses, hints, streak ->
+    private val player = combine(container.player.hints, container.player.streak, container.player.tutorialSeen) { h, s, t ->
+        val todayIndex = content.value?.second?.let { DailyCalendar.dayIndex(LocalDate.parse(it.epoch), container.today()) }
+        PlayerSnapshot(h, todayIndex?.let(s::displayed) ?: s.current, t)
+    }
+
+    val state: StateFlow<HomeUiState> = combine(content, kind, container.progress.statuses, player) { loaded, kind, statuses, p ->
         if (loaded == null) return@combine HomeUiState(loading = true, kind = kind)
         val (index, daily) = loaded
         val today = container.today()
@@ -74,17 +76,19 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             .sortedBy { (theme, _) -> THEME_ORDER.indexOf(theme).let { i -> if (i < 0) Int.MAX_VALUE else i } }
             .map { (theme, packs) ->
                 ThemeSection(
-                    theme,
-                    packs.first().themeTitle,
-                    packs.sortedBy { it.volume }.map { PackItem(it, completedByPack[it.id] ?: 0) },
+                    theme = theme,
+                    title = packs.first().themeTitle,
+                    packs = packs.sortedBy { it.volume }.map { PackItem(it, completedByPack[it.id] ?: 0) },
+                    puzzleCount = packs.sumOf { it.count },
                 )
             }
         HomeUiState(
             loading = false,
             daily = DailyItem(dailyPuzzle, today, dailyStatus?.completed == true, dailyStatus != null && !dailyStatus.completed),
-            streak = streak.displayed(todayIndex),
-            bestStreak = streak.best,
-            hints = hints,
+            streak = p.streak,
+            hints = p.hints,
+            completedTotal = statuses.values.count { it.completed },
+            tutorialSeen = p.tutorialSeen,
             kind = kind,
             sections = sections,
         )
