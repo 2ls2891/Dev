@@ -42,10 +42,19 @@ info() { printf '\033[1;34m▶ %s\033[0m\n' "$*"; }
 fail() { printf '\033[1;31m✖ %s\033[0m\n' "$*" >&2; exit 1; }
 
 OS="$(uname -s)"
-case "$(uname -m)" in
-  arm64|aarch64) ABI="arm64-v8a" ;;
-  *) ABI="x86_64" ;;
-esac
+# 에뮬레이터 이미지는 "하드웨어" 아키텍처와 같아야 한다.
+# 터미널이 Rosetta(x86_64)로 실행 중이면 uname -m 이 x86_64 로 나오므로, 맥에서는 sysctl 로 실제 CPU를 확인한다.
+if [ "$OS" = "Darwin" ] && [ "$(sysctl -n hw.optional.arm64 2>/dev/null || true)" = "1" ]; then
+  ABI="arm64-v8a"
+  if [ "$(sysctl -n sysctl.proc_translated 2>/dev/null || true)" = "1" ]; then
+    printf '\033[1;33m! 터미널이 Rosetta(x86_64)로 실행 중입니다. 동작은 하지만 빌드가 느릴 수 있습니다.\033[0m\n'
+  fi
+else
+  case "$(uname -m)" in
+    arm64|aarch64) ABI="arm64-v8a" ;;
+    *) ABI="x86_64" ;;
+  esac
+fi
 SYSTEM_IMAGE="system-images;${API_IMAGE};google_apis_playstore;${ABI}"
 
 # ---- SDK 위치 ----
@@ -114,6 +123,8 @@ if [ -z "$JAVA_HOME" ]; then
   fail "JDK 17 이상이 필요합니다. 설치: brew install --cask temurin@21  (설치 후 다시 실행)"
 fi
 export JAVA_HOME PATH="$JAVA_HOME/bin:$PATH"
+# JDK 버전은 위에서 확인했으므로 sdkmanager/avdmanager 자체 버전 검사(로케일·환경에 따라 오작동)는 끈다
+export SKIP_JDK_VERSION_CHECK=1
 
 # ---- command-line tools ----
 if [ ! -x "$SDKMANAGER" ]; then
