@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- INTERNET, ACCESS_NETWORK_STATE, AD_ID 권한은 Google Mobile Ads SDK 매니페스트에서 병합된다 -->
+    <!-- 매일 퍼즐 알림 (Android 13+ 는 사용자가 허용해야 함) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".NonogramApplication"

@@ -6,6 +6,7 @@
 |---|---|---|---|
 | [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji) | 퍼즐 그림 (High Contrast → 흑백 퍼즐, Flat → 컬러 퍼즐/클리어 그림) | MIT | `fluentui-emoji-MIT.txt` |
 | [Unicode CLDR](https://github.com/unicode-org/cldr-json) | 한국어 퍼즐 이름 | Unicode License v3 | `unicode-cldr-LICENSE.txt` |
+| [Gaegu](https://github.com/google/fonts/tree/main/ofl/gaegu) (JIKJI SOFT) | 손글씨 제목 글꼴 | SIL OFL 1.1 | `gaegu-OFL.txt` |
 
 새 소스를 추가할 때 규칙
 - 상업적 사용이 허용되는 라이선스만 쓴다: CC0, MIT, Apache-2.0, CC BY(저작자 표시 필요)는 가능.

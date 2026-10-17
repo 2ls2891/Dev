@@ -33,4 +33,10 @@ data class Streak(val current: Int = 0, val best: Int = 0, val lastDay: Long? = 
     fun displayed(today: Long): Int = if (lastDay != null && today - lastDay <= 1) current else 0
 
     fun isClearedOn(day: Long) = lastDay == day
+
+    /** 어제 하루만 놓쳤고 2일 이상 이어온 기록이면 (보상형 광고로) 지킬 수 있다 */
+    fun canRestore(today: Long): Boolean = lastDay != null && today - lastDay == 2L && current >= 2
+
+    /** 어제 푼 것으로 간주해 오늘 클리어 시 기록이 이어지게 한다 */
+    fun restored(today: Long): Streak = if (canRestore(today)) copy(lastDay = today - 1) else this
 }

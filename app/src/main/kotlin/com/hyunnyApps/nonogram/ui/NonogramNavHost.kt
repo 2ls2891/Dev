@@ -2,13 +2,18 @@ package com.hyunnyApps.nonogram.ui
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hyunnyApps.nonogram.AppContainer
+import com.hyunnyApps.nonogram.core.daily.DailyCalendar
+import com.hyunnyApps.nonogram.data.DAILY
 import com.hyunnyApps.nonogram.ui.gallery.GalleryScreen
 import com.hyunnyApps.nonogram.ui.game.GameScreen
 import com.hyunnyApps.nonogram.ui.game.GameViewModel
@@ -18,6 +23,7 @@ import com.hyunnyApps.nonogram.ui.pack.PackViewModel
 import com.hyunnyApps.nonogram.ui.settings.LicensesScreen
 import com.hyunnyApps.nonogram.ui.settings.SettingsScreen
 import com.hyunnyApps.nonogram.ui.tutorial.TutorialScreen
+import java.time.LocalDate
 
 private object Routes {
     const val HOME = "home"
@@ -32,12 +38,27 @@ private object Routes {
     fun game(source: String, id: String) = "game/${Uri.encode(source)}/${Uri.encode(id)}"
 }
 
+/**
+ * @param openDaily 알림을 눌러 들어온 경우 true → 오늘의 퍼즐로 바로 이동
+ */
 @Composable
-fun NonogramNavHost(container: AppContainer, modifier: Modifier = Modifier) {
+fun NonogramNavHost(container: AppContainer, modifier: Modifier = Modifier, openDaily: Boolean = false) {
     val nav = rememberNavController()
+    val hapticOn by container.player.hapticOn.collectAsStateWithLifecycle(initialValue = true)
+
+    LaunchedEffect(openDaily) {
+        if (!openDaily) return@LaunchedEffect
+        val daily = container.content.daily()
+        val index = DailyCalendar.dayIndex(LocalDate.parse(daily.epoch), container.today())
+        val puzzle = daily.puzzles[DailyCalendar.puzzlePosition(index, daily.puzzles.size)]
+        nav.navigate(Routes.game(DAILY, puzzle.id)) { launchSingleTop = true }
+    }
+
     NavHost(nav, startDestination = Routes.HOME, modifier = modifier) {
         composable(Routes.HOME) {
             HomeScreen(
+                rewarded = container.rewarded,
+                player = container.player,
                 onOpenPuzzle = { source, id -> nav.navigate(Routes.game(source, id)) },
                 onOpenPack = { nav.navigate(Routes.pack(it)) },
                 onOpenSettings = { nav.navigate(Routes.SETTINGS) },
@@ -60,6 +81,8 @@ fun NonogramNavHost(container: AppContainer, modifier: Modifier = Modifier) {
         ) {
             GameScreen(
                 rewarded = container.rewarded,
+                sound = container.sound,
+                hapticEnabled = hapticOn,
                 onBack = { nav.popBackStack() },
                 // 다음 퍼즐은 현재 게임 화면을 대체한다 (뒤로 가기 시 목록으로)
                 onOpenPuzzle = { source, id ->

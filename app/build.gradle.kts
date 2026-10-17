@@ -169,6 +169,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(libs.work.runtime)
     implementation(libs.play.services.ads)
     implementation(libs.ump)
 

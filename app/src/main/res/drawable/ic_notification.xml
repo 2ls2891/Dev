@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 알림 아이콘: 흰색 단색 픽셀 하트 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="10"
+    android:viewportHeight="10">
+    <path android:fillColor="#FFFFFFFF" android:pathData="M2,1h2v2h-2zM6,1h2v2h-2zM0,3h10v3h-10zM2,6h6v2h-6zM4,8h2v2h-2z" />
+</vector>

@@ -130,5 +130,15 @@ class GameSessionTest {
         assertEquals(0, s.displayed(8))
         s = s.onDailyCleared(9)
         assertEquals(Streak(1, 2, 9), s)
+
+        // 하루 놓침 → 복구 가능, 복구 후 오늘 풀면 이어진다
+        var r = Streak(5, 5, 20)
+        assertTrue(r.canRestore(22))
+        assertFalse(r.canRestore(21)) // 아직 안 끊김
+        assertFalse(r.canRestore(23)) // 이틀 이상 놓침
+        assertFalse(Streak(1, 1, 20).canRestore(22)) // 1일 기록은 대상 아님
+        r = r.restored(22)
+        assertEquals(5, r.displayed(22))
+        assertEquals(Streak(6, 6, 22), r.onDailyCleared(22))
     }
 }

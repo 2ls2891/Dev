@@ -70,6 +70,12 @@ class ProgressRepository(rootDir: File, scope: CoroutineScope) {
 
     private fun fileOf(id: String) = AtomicFile(File(dir, "${id.replace(Regex("[^A-Za-z0-9_.-]"), "_")}.json"))
 
+    /** 요약 로드를 기다린 뒤 완성 여부 (백그라운드 작업용) */
+    suspend fun isCompleted(id: String): Boolean {
+        summaryLoaded.await()
+        return _statuses.value[id]?.completed == true
+    }
+
     suspend fun load(id: String): PuzzleProgress? = withContext(Dispatchers.IO) {
         mutex.withLock { readOrNull(fileOf(id)) { json.decodeFromString(PuzzleProgress.serializer(), it) } }
     }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,7 +56,7 @@ fun RuleExample(clue: List<Int>, cells: String, modifier: Modifier = Modifier, c
                     .border(0.5.dp, board.gridLine),
                 contentAlignment = Alignment.Center,
             ) {
-                if (ch == 'x') Icon(AppIcons.Cross, null, tint = board.cross, modifier = Modifier.size(cell * 0.6f))
+                if (ch == 'x') PixelIcon(PixelIcons.Cross, size = cell * 0.5f, tint = board.cross)
             }
         }
     }

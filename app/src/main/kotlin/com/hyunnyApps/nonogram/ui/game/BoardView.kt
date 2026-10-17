@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import com.hyunnyApps.nonogram.ui.theme.BoardColors
+import com.hyunnyApps.nonogram.ui.theme.HandFont
 import com.hyunnyApps.nonogram.ui.theme.LocalBoardColors
 import com.hyunnyApps.nonogram.core.Clue
 import com.hyunnyApps.nonogram.core.game.Hint
@@ -63,6 +64,8 @@ fun BoardView(
     onStrokeEnd: () -> Unit,
     onStrokeCancel: () -> Unit,
     modifier: Modifier = Modifier,
+    /** 방금 맞춘 줄 형광펜 효과 (0→1 진행) */
+    flash: LineFlash? = null,
 ) {
     val colors = LocalBoardColors.current
     val density = LocalDensity.current
@@ -141,9 +144,21 @@ fun BoardView(
                     }
                 }
         ) {
-            drawBoard(geometry, rowClues, colClues, board, palette, isColor, highlight, activeCell, colors, texts)
+            drawBoard(geometry, rowClues, colClues, board, palette, isColor, highlight, activeCell, colors, texts, flash)
         }
     }
+}
+
+/** 방금 맞춘 줄 (형광펜이 단서 위를 쓱 지나간다) */
+class LineFlash(val rows: Set<Int>, val cols: Set<Int>, val progress: Float)
+
+/** 형광펜 효과: 앞쪽 60% 동안 칠해지고 나머지 동안 사라진다 */
+private fun DrawScope.drawFlash(p: Float, x: Float, y: Float, w: Float, h: Float, horizontal: Boolean, colors: BoardColors) {
+    val sweep = (p / 0.6f).coerceIn(0f, 1f)
+    val fade = 1f - ((p - 0.6f) / 0.4f).coerceIn(0f, 1f)
+    val color = colors.activeClue.copy(alpha = 0.9f * fade)
+    if (horizontal) drawRect(color, Offset(x, y + h * 0.12f), Size(w * sweep, h * 0.76f))
+    else drawRect(color, Offset(x + w * 0.12f, y), Size(w * 0.76f, h * sweep))
 }
 
 /** 단서 숫자 레이아웃 캐시 (같은 숫자·크기는 한 번만 측정) */
@@ -155,7 +170,7 @@ private class TextCache(val measurer: TextMeasurer) {
         return cache.getOrPut(key) {
             measurer.measure(
                 text,
-                TextStyle(fontSize = with(scope) { fontPx.toSp() }, fontWeight = FontWeight.SemiBold),
+                TextStyle(fontSize = with(scope) { fontPx.toSp() }, fontFamily = HandFont, fontWeight = FontWeight.Bold),
             )
         }
     }
@@ -172,6 +187,7 @@ private fun DrawScope.drawBoard(
     activeCell: Int,
     colors: BoardColors,
     texts: TextCache,
+    flash: LineFlash?,
 ) {
     val activeRow = if (activeCell >= 0) activeCell / g.columns else -1
     val activeCol = if (activeCell >= 0) activeCell % g.columns else -1
@@ -259,12 +275,18 @@ private fun DrawScope.drawBoard(
     clipRect(g.originX, g.gridTop, g.gridLeft, g.gridTop + g.gridHeight) {
         drawRect(colors.clueBackground, Offset(g.originX, g.gridTop), Size(g.leftArea, g.gridHeight))
         if (activeRow >= 0) drawRect(colors.activeClue, Offset(g.originX, g.cellTop(activeRow)), Size(g.leftArea, cell))
-        val fontPx = minOf(slot, cell) * 0.6f
+        val fontPx = minOf(slot, cell) * 0.72f
         for (r in r0..r1) {
             val items = rowClues[r].items()
             val y = g.cellTop(r)
+            if (flash != null && r in flash.rows) drawFlash(flash.progress, g.originX, y, g.leftArea, cell, horizontal = true, colors)
             items.forEachIndexed { i, (color, length) ->
                 drawClueNumber(color, length, board.rowDone[r], g.gridLeft - (items.size - i) * slot, y, slot, cell, fontPx)
+            }
+            // 맞춘 줄은 연필로 쓱 그어 지운다
+            if (board.rowDone[r] && rowClues[r].isNotEmpty()) {
+                val x0 = g.gridLeft - items.size * slot + slot * 0.2f
+                drawLine(colors.clueDone, Offset(x0, y + cell * 0.55f), Offset(g.gridLeft - slot * 0.2f, y + cell * 0.45f), (cell * 0.07f).coerceIn(1.5f, 3f))
             }
         }
     }
@@ -272,12 +294,17 @@ private fun DrawScope.drawBoard(
     clipRect(g.gridLeft, g.originY, g.gridLeft + g.gridWidth, g.gridTop) {
         drawRect(colors.clueBackground, Offset(g.gridLeft, g.originY), Size(g.gridWidth, g.topArea))
         if (activeCol >= 0) drawRect(colors.activeClue, Offset(g.cellLeft(activeCol), g.originY), Size(cell, g.topArea))
-        val fontPx = minOf(slot, cell) * 0.6f
+        val fontPx = minOf(slot, cell) * 0.72f
         for (c in c0..c1) {
             val items = colClues[c].items()
             val x = g.cellLeft(c)
+            if (flash != null && c in flash.cols) drawFlash(flash.progress, x, g.originY, cell, g.topArea, horizontal = false, colors)
             items.forEachIndexed { i, (color, length) ->
                 drawClueNumber(color, length, board.colDone[c], x, g.gridTop - (items.size - i) * slot, cell, slot, fontPx)
+            }
+            if (board.colDone[c] && colClues[c].isNotEmpty()) {
+                val y0 = g.gridTop - items.size * slot + slot * 0.2f
+                drawLine(colors.clueDone, Offset(x + cell * 0.45f, y0), Offset(x + cell * 0.55f, g.gridTop - slot * 0.2f), (cell * 0.07f).coerceIn(1.5f, 3f))
             }
         }
     }

@@ -10,6 +10,8 @@ import com.hyunnyApps.nonogram.ads.RewardedAdManager
 import com.hyunnyApps.nonogram.data.ContentRepository
 import com.hyunnyApps.nonogram.data.PlayerRepository
 import com.hyunnyApps.nonogram.data.ProgressRepository
+import com.hyunnyApps.nonogram.feedback.SoundManager
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 /** 앱 수명 동안 하나씩만 존재하는 객체들 (수동 DI). ViewModel 팩토리가 여기서 의존성을 꺼낸다. */
@@ -24,6 +26,10 @@ class AppContainer(app: Application) {
     val consent = ConsentManager(app)
     val ads = AdsManager(app, consent, appScope)
     val rewarded = RewardedAdManager(app, ads, appScope)
+
+    val sound = SoundManager(app).also { s ->
+        appScope.launch { player.soundOn.collect { s.enabled = it } }
+    }
 
     /** 테스트에서 바꿀 수 있도록 오늘 날짜 공급자를 한 곳에 둔다 */
     var today: () -> LocalDate = { LocalDate.now() }

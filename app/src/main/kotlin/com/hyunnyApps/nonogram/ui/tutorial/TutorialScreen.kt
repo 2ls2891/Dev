@@ -44,6 +44,13 @@ import com.hyunnyApps.nonogram.core.game.Mark
 import com.hyunnyApps.nonogram.ui.components.PixelPicture
 import com.hyunnyApps.nonogram.ui.components.RuleItem
 import com.hyunnyApps.nonogram.ui.components.RuleExample
+import com.hyunnyApps.nonogram.ui.components.PaperCard
+import com.hyunnyApps.nonogram.ui.components.PixelIcons
+import com.hyunnyApps.nonogram.ui.components.Stamp
+import com.hyunnyApps.nonogram.ui.components.StickerButton
+import com.hyunnyApps.nonogram.ui.components.StickerStyle
+import com.hyunnyApps.nonogram.ui.theme.LocalNoteColors
+import androidx.compose.foundation.layout.offset
 import com.hyunnyApps.nonogram.ui.game.BoardUi
 import com.hyunnyApps.nonogram.ui.game.BoardView
 
@@ -64,11 +71,11 @@ private const val STEPS = 5 // 소개, 규칙 1~3, 연습
 fun TutorialScreen(onMarkSeen: suspend () -> Unit, onDone: () -> Unit, initialStep: Int = 0) {
     LaunchedEffect(Unit) { onMarkSeen() }
     var step by rememberSaveable { mutableIntStateOf(initialStep) }
-    Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).padding(horizontal = 24.dp)) {
             Row(Modifier.fillMaxWidth().padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.tutorial_title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                TextButton(onClick = onDone) { Text(stringResource(R.string.tutorial_skip)) }
+                TextButton(onClick = onDone) { Text(stringResource(R.string.tutorial_skip), color = LocalNoteColors.current.inkSoft) }
             }
             StepDots(step)
             Spacer(Modifier.height(24.dp))
@@ -82,9 +89,7 @@ fun TutorialScreen(onMarkSeen: suspend () -> Unit, onDone: () -> Unit, initialSt
                 }
             }
             if (step < STEPS - 1) {
-                Button(onClick = { step++ }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text(stringResource(R.string.tutorial_next), style = MaterialTheme.typography.titleMedium)
-                }
+                StickerButton(stringResource(R.string.tutorial_next), { step++ }, modifier = Modifier.fillMaxWidth())
             }
             Spacer(Modifier.height(20.dp))
         }
@@ -97,7 +102,7 @@ private fun StepDots(step: Int) {
         repeat(STEPS) { i ->
             Box(
                 Modifier.height(6.dp).width(if (i == step) 24.dp else 6.dp).clip(CircleShape)
-                    .background(if (i <= step) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
+                    .background(if (i <= step) LocalNoteColors.current.redPencil else LocalNoteColors.current.paperLineStrong),
             )
         }
     }
@@ -118,8 +123,8 @@ private fun IntroStep() {
                 RuleExample(listOf(1), "..#..", cell = 22.dp)
             }
             Text("→", style = MaterialTheme.typography.headlineMedium)
-            Surface(shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surface) {
-                PixelPicture(HeartPicture, Modifier.size(96.dp).padding(14.dp))
+            PaperCard(Modifier.size(104.dp), rotation = 2f, tape = true) {
+                PixelPicture(HeartPicture, Modifier.size(94.dp).padding(14.dp))
             }
         }
     }
@@ -165,12 +170,14 @@ private fun PracticeStep(onDone: () -> Unit) {
         if (solved) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(stringResource(R.string.tutorial_done_title), style = MaterialTheme.typography.headlineSmall)
-                Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surface) {
-                    PixelPicture(HeartPicture, Modifier.size(160.dp).padding(24.dp))
+                Box {
+                    PaperCard(Modifier.size(170.dp), rotation = -2f, tape = true) {
+                        PixelPicture(HeartPicture, Modifier.size(160.dp).padding(24.dp))
+                    }
+                    Stamp(stringResource(R.string.stamp_text), Modifier.align(Alignment.BottomEnd).offset(x = 40.dp, y = 20.dp), size = 84.dp)
                 }
-                Button(onClick = onDone, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text(stringResource(R.string.tutorial_done_button), style = MaterialTheme.typography.titleMedium)
-                }
+                Spacer(Modifier.height(12.dp))
+                StickerButton(stringResource(R.string.tutorial_done_button), onDone, icon = PixelIcons.Play, modifier = Modifier.fillMaxWidth())
             }
             return@Column
         }
@@ -194,19 +201,19 @@ private fun PracticeStep(onDone: () -> Unit) {
             onStrokeCancel = { session.cancelStroke(); active = -1; version++ },
             modifier = Modifier.fillMaxWidth().heightIn(max = 300.dp),
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ToolButton(tool == 1, stringResource(R.string.game_tool_fill), Modifier.weight(1f)) { tool = 1 }
-            ToolButton(tool == Mark.CROSS, stringResource(R.string.game_tool_cross), Modifier.weight(1f)) { tool = Mark.CROSS }
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            StickerButton(
+                stringResource(R.string.game_tool_fill), { tool = 1 },
+                style = if (tool == 1) StickerStyle.Highlight else StickerStyle.Plain, selected = tool == 1,
+                icon = PixelIcons.Square, height = 48.dp, modifier = Modifier.weight(1f),
+            )
+            StickerButton(
+                stringResource(R.string.game_tool_cross), { tool = Mark.CROSS },
+                style = if (tool == Mark.CROSS) StickerStyle.Highlight else StickerStyle.Plain, selected = tool == Mark.CROSS,
+                icon = PixelIcons.Cross, height = 48.dp, modifier = Modifier.weight(1f),
+            )
         }
     }
 }
 
-@Composable
-private fun ToolButton(selected: Boolean, label: String, modifier: Modifier, onClick: () -> Unit) {
-    if (selected) {
-        Button(onClick = onClick, modifier = modifier.height(48.dp)) { Text(label) }
-    } else {
-        androidx.compose.material3.OutlinedButton(onClick = onClick, modifier = modifier.height(48.dp)) { Text(label) }
-    }
-}
 

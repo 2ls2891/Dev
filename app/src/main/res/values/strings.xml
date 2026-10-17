@@ -109,6 +109,32 @@
     <string name="gallery_empty_button">퍼즐 하러 가기</string>
     <string name="gallery_daily">오늘의 퍼즐</string>
 
+    <string name="reminder_channel_name">오늘의 퍼즐 알림</string>
+    <string name="reminder_channel_desc">매일 새 퍼즐이 나오면 알려드려요</string>
+    <string name="reminder_title">오늘의 퍼즐이 도착했어요 ✏️</string>
+    <string name="reminder_text">잠깐 머리 식히면서 한 장 그려볼까요?</string>
+    <string name="reminder_text_streak">%1$d일째 이어온 기록, 오늘도 이어가요!</string>
+    <string name="settings_sound">효과음</string>
+    <string name="settings_haptic">진동</string>
+    <string name="settings_reminder">매일 알림</string>
+    <string name="settings_reminder_off">끄기</string>
+    <string name="reminder_hour_8">아침 8시</string>
+    <string name="reminder_hour_12">낮 12시</string>
+    <string name="reminder_hour_19">저녁 7시</string>
+    <string name="reminder_hour_21">밤 9시</string>
+    <string name="reminder_denied">알림 권한이 꺼져 있어요. 휴대폰 설정에서 허용해 주세요.</string>
+    <string name="reminder_card_title">매일 한 장씩 그려볼까요?</string>
+    <string name="reminder_card_text">오늘의 퍼즐이 나오면 알려드릴게요</string>
+    <string name="reminder_card_yes">알림 받기</string>
+    <string name="reminder_card_no">괜찮아요</string>
+    <string name="continue_title">이어서 그리기</string>
+    <string name="continue_progress">%1$d%% 칠함</string>
+    <string name="streak_lost_title">%1$d일 연속 기록이 끊겼어요</string>
+    <string name="streak_lost_text">광고를 보면 어제 푼 것으로 쳐 드려요</string>
+    <string name="streak_keep">기록 지키기</string>
+    <string name="streak_kept">기록을 지켰어요! 오늘 퍼즐을 풀면 이어져요</string>
+    <string name="stamp_text">참\n잘했어요</string>
+
     <plurals name="reward_text">
         <item quantity="other">짧은 광고를 보면 힌트 %1$d개를 받아요. 매일 무료 힌트 3개도 채워져요.</item>
     </plurals>

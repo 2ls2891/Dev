@@ -11,7 +11,10 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -77,6 +80,15 @@ data class GameUiState(
     val nextId: String? = null,
 )
 
+/** 소리·진동·반짝임 등 화면 연출용 일회성 이벤트 */
+sealed interface GameFeedback {
+    /** 칸을 칠하거나 ✕ 표시함 */
+    data class Painted(val cross: Boolean) : GameFeedback
+    /** 이번 조작으로 새로 맞춘 줄 */
+    data class LinesDone(val rows: List<Int>, val cols: List<Int>) : GameFeedback
+    data object Completed : GameFeedback
+}
+
 sealed interface GameMessage {
     data class HintsGranted(val count: Int) : GameMessage
     data object AdNotReady : GameMessage
@@ -96,6 +108,13 @@ class GameViewModel(
 
     private val _state = MutableStateFlow(GameUiState(source = source))
     val state: StateFlow<GameUiState> = _state.asStateFlow()
+
+    private val _feedback = MutableSharedFlow<GameFeedback>(extraBufferCapacity = 32)
+    val feedback: SharedFlow<GameFeedback> = _feedback.asSharedFlow()
+
+    // 새로 맞춘 줄 판별용 (직전 조작 후 상태)
+    private var doneRows = BooleanArray(0)
+    private var doneCols = BooleanArray(0)
 
     private val _message = MutableStateFlow<GameMessage?>(null)
     /** 한 번 보여주고 consumeMessage() 로 지운다 */
@@ -157,7 +176,9 @@ class GameViewModel(
                 )
             }
             publishBoard()
+            snapshotDoneLines()
             if (resumed) startTimer()
+            container.appScope.launch { container.player.setLastPlayed(source, puzzleId) }
         } catch (e: Exception) {
             Log.e(TAG, "load failed: $source/$puzzleId", e)
             _state.update { it.copy(loading = false, error = true) }
@@ -201,9 +222,11 @@ class GameViewModel(
 
     fun onStrokeStart(index: Int) {
         val s = editable() ?: return
+        val before = s.markAt(index)
         s.beginStroke(index, _state.value.tool)
         _state.update { it.copy(activeCell = index) }
         publishBoard()
+        if (s.markAt(index) != before) _feedback.tryEmit(GameFeedback.Painted(s.markAt(index) == Mark.CROSS))
     }
 
     fun onStrokeMove(index: Int) {
@@ -212,7 +235,10 @@ class GameViewModel(
         val before = s.version
         s.extendStroke(index)
         if (_state.value.activeCell != index) _state.update { it.copy(activeCell = index) }
-        if (s.version != before) publishBoard()
+        if (s.version != before) {
+            publishBoard()
+            _feedback.tryEmit(GameFeedback.Painted(_state.value.tool == Mark.CROSS))
+        }
     }
 
     fun onStrokeEnd() {
@@ -239,8 +265,26 @@ class GameViewModel(
     private fun afterChange() {
         _state.update { it.copy(lastHint = null) }
         publishBoard()
+        emitNewLines()
         checkCompleted()
         scheduleSave()
+    }
+
+    private fun snapshotDoneLines() {
+        val b = _state.value.board ?: return
+        doneRows = b.rowDone.copyOf()
+        doneCols = b.colDone.copyOf()
+    }
+
+    /** 직전 조작으로 새로 맞춘 줄이 있으면 알린다 (완성 순간은 완성 연출이 대신한다) */
+    private fun emitNewLines() {
+        val b = _state.value.board ?: return
+        val rows = b.rowDone.indices.filter { b.rowDone[it] && !doneRows.getOrElse(it) { false } }
+        val cols = b.colDone.indices.filter { b.colDone[it] && !doneCols.getOrElse(it) { false } }
+        snapshotDoneLines()
+        if ((rows.isNotEmpty() || cols.isNotEmpty()) && session?.isSolved() != true) {
+            _feedback.tryEmit(GameFeedback.LinesDone(rows, cols))
+        }
     }
 
     // ---- 힌트 / 보상형 광고 ----
@@ -256,6 +300,7 @@ class GameViewModel(
             s.setMark(hint.index, hint.mark)
             _state.update { it.copy(lastHint = hint, hintsUsed = it.hintsUsed + 1) }
             publishBoard()
+            emitNewLines()
             checkCompleted()
             scheduleSave()
         }
@@ -286,6 +331,7 @@ class GameViewModel(
         stopTimer()
         completedAtMs = System.currentTimeMillis()
         _state.update { it.copy(completed = true, justCompleted = true, lastHint = null, activeCell = -1, elapsedMs = accumulatedMs) }
+        _feedback.tryEmit(GameFeedback.Completed)
         val r = ref ?: return
         if (r.source == DAILY) {
             container.appScope.launch {
@@ -309,6 +355,7 @@ class GameViewModel(
         completedAtMs = null
         _state.update { it.copy(completed = false, justCompleted = false, elapsedMs = 0, hintsUsed = 0, lastHint = null) }
         publishBoard()
+        snapshotDoneLines()
         if (resumed) startTimer()
         container.appScope.launch { container.progress.delete(puzzleId) }
         hasSavedProgress = false
