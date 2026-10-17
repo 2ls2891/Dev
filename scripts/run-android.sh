@@ -56,9 +56,27 @@ SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$(sdk_from_local_properties)}}"
 if [ -z "$SDK" ]; then
   if [ "$OS" = "Darwin" ]; then SDK="$HOME/Library/Android/sdk"; else SDK="$HOME/Android/Sdk"; fi
 fi
+mkdir -p "$SDK"
+SDK="$(cd "$SDK" && pwd -P)"  # 링크를 풀어 실제 경로로 고정
 export ANDROID_HOME="$SDK" ANDROID_SDK_ROOT="$SDK"
-SDKMANAGER="$SDK/cmdline-tools/latest/bin/sdkmanager"
-AVDMANAGER="$SDK/cmdline-tools/latest/bin/avdmanager"
+AVD_HOME="${ANDROID_AVD_HOME:-$HOME/.android/avd}"
+
+# cmdline-tools 는 반드시 이 SDK 안에 실제로 있는 것을 쓴다.
+# Homebrew(android-commandlinetools) 등 다른 SDK를 가리키는 링크면 구버전 sdkmanager/avdmanager 가
+# 자기 위치를 SDK로 착각해 시스템 이미지를 엉뚱한 곳에 설치한다 → 에뮬레이터가 이미지를 못 찾음.
+TOOLS="$SDK/cmdline-tools/latest"
+if [ -d "$TOOLS" ]; then
+  real_tools="$(cd "$TOOLS" && pwd -P)"
+  case "$real_tools" in
+    "$SDK"/*) ;;
+    *)
+      printf '\033[1;33m! %s 이(가) 다른 SDK(%s)를 가리킵니다. 이 SDK 전용 도구를 따로 설치해 사용합니다.\033[0m\n' "$TOOLS" "$real_tools"
+      TOOLS="$SDK/cmdline-tools/run-android"
+      ;;
+  esac
+fi
+SDKMANAGER="$TOOLS/bin/sdkmanager"
+AVDMANAGER="$TOOLS/bin/avdmanager"
 ADB="$SDK/platform-tools/adb"
 EMULATOR="$SDK/emulator/emulator"
 
@@ -108,8 +126,8 @@ if [ ! -x "$SDKMANAGER" ]; then
   [ "$actual" = "$sha" ] || fail "체크섬 불일치 ($actual != $sha). 다운로드가 손상되었을 수 있습니다."
   mkdir -p "$SDK/cmdline-tools"
   unzip -q "$tmp/clt.zip" -d "$tmp/x"
-  rm -rf "$SDK/cmdline-tools/latest"
-  mv "$tmp/x/cmdline-tools" "$SDK/cmdline-tools/latest"
+  rm -rf "$TOOLS"
+  mv "$tmp/x/cmdline-tools" "$TOOLS"
 fi
 
 # ---- SDK 구성요소 (이미 있으면 건너뜀) ----
@@ -123,13 +141,17 @@ if [ "$USE_DEVICE" = 0 ]; then
 fi
 if [ "${#need[@]}" -gt 0 ]; then
   info "SDK 라이선스 동의 및 설치: ${need[*]}"
-  yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
-  "$SDKMANAGER" --install "${need[@]}"
+  yes | "$SDKMANAGER" --sdk_root="$SDK" --licenses >/dev/null 2>&1 || true
+  "$SDKMANAGER" --sdk_root="$SDK" --install "${need[@]}"
+  if [ "$USE_DEVICE" = 0 ] && [ ! -d "$SDK/system-images/${API_IMAGE}/google_apis_playstore/${ABI}" ]; then
+    fail "시스템 이미지가 $SDK 에 설치되지 않았습니다. 'ls $SDK/system-images' 결과와 함께 문의하세요."
+  fi
 fi
 
-# Gradle이 SDK를 찾도록
-if [ -z "$(sdk_from_local_properties)" ]; then
-  echo "sdk.dir=$SDK" >> "$ROOT/local.properties"
+# Gradle 도 같은 SDK를 쓰도록 local.properties 의 sdk.dir 를 맞춘다 (local.properties 는 git 에 올라가지 않음)
+if [ "$(sdk_from_local_properties)" != "$SDK" ]; then
+  { [ -f "$ROOT/local.properties" ] && grep -v '^sdk\.dir=' "$ROOT/local.properties" || true; echo "sdk.dir=$SDK"; } > "$ROOT/local.properties.tmp"
+  mv "$ROOT/local.properties.tmp" "$ROOT/local.properties"
 fi
 
 # ---- 대상 기기 ----
@@ -144,19 +166,32 @@ if [ "$USE_DEVICE" = 1 ]; then
   SERIAL="$(online_serial device)"
   [ -n "$SERIAL" ] || fail "연결된 실기기가 없습니다. USB 디버깅을 켜고 'adb devices'로 확인하세요."
 else
-  if ! "$AVDMANAGER" list avd -c 2>/dev/null | grep -qx "$AVD_NAME"; then
+  # AVD 가 이 SDK의 시스템 이미지를 가리키는지 확인 (다른 SDK로 만들어진 AVD는 다시 만든다)
+  avd_ok() {
+    local cfg="$AVD_HOME/$AVD_NAME.avd/config.ini" sysdir
+    [ -f "$cfg" ] || return 1
+    sysdir="$(sed -n 's/^image\.sysdir\.1=//p' "$cfg" | head -1)"
+    [ -n "$sysdir" ] && [ -d "$SDK/$sysdir" ] && grep -qx "abi.type=$ABI" "$cfg"
+  }
+  if ! avd_ok; then
+    if [ -e "$AVD_HOME/$AVD_NAME.ini" ] || [ -d "$AVD_HOME/$AVD_NAME.avd" ]; then
+      info "기존 에뮬레이터($AVD_NAME)가 이 SDK의 이미지를 찾지 못해 다시 만듭니다"
+      "$AVDMANAGER" delete avd -n "$AVD_NAME" >/dev/null 2>&1 || true
+      rm -rf "$AVD_HOME/$AVD_NAME.ini" "$AVD_HOME/$AVD_NAME.avd"
+    fi
     info "에뮬레이터($AVD_NAME, $SYSTEM_IMAGE) 생성"
     device=""
     for d in pixel_8 pixel_7 pixel_6 pixel_5; do
       if "$AVDMANAGER" list device -c 2>/dev/null | grep -qx "$d"; then device="$d"; break; fi
     done
     echo no | "$AVDMANAGER" create avd -n "$AVD_NAME" -k "$SYSTEM_IMAGE" ${device:+-d "$device"} --force >/dev/null
-    cfg="$HOME/.android/avd/$AVD_NAME.avd/config.ini"
+    cfg="$AVD_HOME/$AVD_NAME.avd/config.ini"
     if [ -f "$cfg" ]; then
       grep -v '^hw\.keyboard=' "$cfg" > "$cfg.tmp" || true
       echo 'hw.keyboard=yes' >> "$cfg.tmp"
       mv "$cfg.tmp" "$cfg"
     fi
+    avd_ok || fail "에뮬레이터를 만들었지만 시스템 이미지 경로가 맞지 않습니다 ($cfg 의 image.sysdir.1 확인)"
   fi
 
   SERIAL="$(online_serial emulator)"
