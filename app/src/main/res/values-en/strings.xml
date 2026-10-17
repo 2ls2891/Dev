@@ -102,12 +102,11 @@
     <string name="ink_4">Ocean</string>
     <string name="ink_5">Cocoa</string>
     <string name="gallery_title">My collection</string>
-    <string name="gallery_progress">%1$d of %2$d collected</string>
+    <string name="gallery_progress">%1$,d of %2$,d collected</string>
     <string name="gallery_empty_title">No pictures yet</string>
     <string name="gallery_empty_text">Solve puzzles to collect their hidden color pictures here</string>
     <string name="gallery_empty_button">Go solve puzzles</string>
     <string name="gallery_daily">Daily puzzles</string>
-    <string name="gallery_open">Open collection</string>
 
     <plurals name="reward_text">
         <item quantity="one">Watch a short ad to get %1$d hint. You also get 3 free hints every day.</item>

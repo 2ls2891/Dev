@@ -59,7 +59,7 @@ import org.robolectric.annotation.GraphicsMode
 abstract class ScreenshotBase {
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
     protected val container get() = ApplicationProvider.getApplicationContext<NonogramApplication>().container
-    private val out = System.getProperty("roborazzi.output.dir") ?: "build/screenshots"
+    protected val out = System.getProperty("roborazzi.output.dir") ?: "build/screenshots"
 
     /** 실제 앱처럼 하단에 광고 배너 자리를 둔다 */
     protected fun show(dark: Boolean = false, ink: Int = 0, content: @Composable () -> Unit) {
@@ -113,7 +113,7 @@ class HomeScreenshot : ScreenshotBase() {
     @Test
     fun home() {
         val vm = HomeViewModel(container)
-        show { HomeScreen({ _, _ -> }, {}, {}, {}, vm) }
+        show { HomeScreen({ _, _ -> }, {}, {}, {}, {}, vm) }
         rule.waitUntil(60_000) { !vm.state.value.loading }
         capture("01_home")
     }
@@ -125,7 +125,7 @@ class HomeColorDarkScreenshot : ScreenshotBase() {
         runBlocking { container.player.markTutorialSeen() }
         val vm = HomeViewModel(container)
         vm.selectKind(KIND_COLOR)
-        show(dark = true) { HomeScreen({ _, _ -> }, {}, {}, {}, vm) }
+        show(dark = true) { HomeScreen({ _, _ -> }, {}, {}, {}, {}, vm) }
         rule.waitUntil(60_000) { !vm.state.value.loading }
         capture("02_home_color_dark")
     }
