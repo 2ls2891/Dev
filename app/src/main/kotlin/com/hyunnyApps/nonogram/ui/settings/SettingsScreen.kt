@@ -34,17 +34,36 @@ import com.hyunnyApps.nonogram.BuildConfig
 import com.hyunnyApps.nonogram.R
 import com.hyunnyApps.nonogram.ads.AdConfig
 import com.hyunnyApps.nonogram.ads.ConsentManager
+import com.hyunnyApps.nonogram.data.PlayerRepository
+import com.hyunnyApps.nonogram.ui.components.RuleExample
+import com.hyunnyApps.nonogram.ui.theme.InkOptions
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.luminance
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(consent: ConsentManager, onBack: () -> Unit, onOpenRules: () -> Unit, onOpenLicenses: () -> Unit) {
+fun SettingsScreen(consent: ConsentManager, player: PlayerRepository, onBack: () -> Unit, onOpenRules: () -> Unit, onOpenLicenses: () -> Unit) {
     val activity = LocalActivity.current
     val privacyRequired by consent.privacyOptionsRequired.collectAsStateWithLifecycle()
+    val ink by player.inkIndex.collectAsStateWithLifecycle(initialValue = 0)
+    val scope = rememberCoroutineScope()
     Scaffold(
         contentWindowInsets = WindowInsets(0),
         topBar = { BackTopBar(stringResource(R.string.settings_title), onBack) },
     ) { padding ->
-        Column(Modifier.padding(padding).fillMaxSize()) {
+        Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState())) {
+            InkPicker(ink) { scope.launch { player.setInk(it) } }
+            HorizontalDivider()
             // 동의가 필요한 지역에서는 사용자가 언제든 광고 동의를 바꿀 수 있어야 한다 (UMP 요구사항)
             if (privacyRequired && activity != null) {
                 ListItem(
@@ -70,6 +89,33 @@ fun SettingsScreen(consent: ConsentManager, onBack: () -> Unit, onOpenRules: () 
                 } else null,
             )
         }
+    }
+}
+
+private val InkNames = listOf(R.string.ink_0, R.string.ink_1, R.string.ink_2, R.string.ink_3, R.string.ink_4, R.string.ink_5)
+
+/** 기본 퍼즐 칠하기 색 선택 + 미리보기 */
+@Composable
+private fun InkPicker(selected: Int, onSelect: (Int) -> Unit) {
+    val dark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(stringResource(R.string.settings_ink), style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.settings_ink_desc), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            InkOptions.forEachIndexed { i, option ->
+                val color = if (dark) option.dark else option.light
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(
+                        Modifier.size(40.dp).clip(CircleShape)
+                            .border(if (i == selected) 3.dp else 1.dp, if (i == selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline, CircleShape)
+                            .clickable { onSelect(i) }
+                            .padding(5.dp).clip(CircleShape).background(color),
+                    )
+                    Text(stringResource(InkNames[i]), style = MaterialTheme.typography.labelSmall)
+                }
+            }
+        }
+        RuleExample(listOf(2, 1), "##.#.", cell = 26.dp)
     }
 }
 

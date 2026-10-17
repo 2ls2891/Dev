@@ -28,6 +28,13 @@ class PlayerRepository(context: Context) {
     /** 튜토리얼을 한 번이라도 열었는지 (첫 실행 시 자동으로 한 번만 보여준다) */
     val tutorialSeen: Flow<Boolean> = store.data.map { it[TUTORIAL_SEEN] == true }
 
+    /** 기본(흑백) 퍼즐에서 칸을 칠하는 색 (ui.theme.InkOptions 의 순번) */
+    val inkIndex: Flow<Int> = store.data.map { it[INK] ?: 0 }
+
+    suspend fun setInk(index: Int) {
+        store.edit { it[INK] = index }
+    }
+
     suspend fun markTutorialSeen() {
         store.edit { it[TUTORIAL_SEEN] = true }
     }
@@ -79,5 +86,6 @@ class PlayerRepository(context: Context) {
         private val STREAK_BEST = intPreferencesKey("streak_best")
         private val STREAK_LAST_DAY = longPreferencesKey("streak_last_day")
         private val TUTORIAL_SEEN = booleanPreferencesKey("tutorial_seen")
+        private val INK = intPreferencesKey("ink")
     }
 }

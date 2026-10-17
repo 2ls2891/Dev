@@ -67,6 +67,7 @@ fun HomeScreen(
     onOpenPack: (packId: String) -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTutorial: () -> Unit,
+    onOpenGallery: () -> Unit,
     viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -85,7 +86,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             item { Header(onOpenTutorial, onOpenSettings) }
-            item { StatsRow(state) }
+            item { StatsRow(state, onOpenGallery) }
             if (!state.tutorialSeen) item { TutorialCard(onOpenTutorial) }
             state.daily?.let { daily -> item { DailyHero(daily) { onOpenPuzzle(DAILY, daily.puzzle.id) } } }
             item { ModeSelector(state.kind, viewModel::selectKind) }
@@ -113,24 +114,28 @@ private fun Header(onHelp: () -> Unit, onSettings: () -> Unit) {
 }
 
 @Composable
-private fun StatsRow(state: HomeUiState) {
+private fun StatsRow(state: HomeUiState, onOpenGallery: () -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         StatTile("🔥", stringResource(R.string.stat_streak), stringResource(R.string.stat_days, state.streak), Modifier.weight(1f))
         StatTile("💡", stringResource(R.string.stat_hints), stringResource(R.string.stat_count, state.hints), Modifier.weight(1f))
-        StatTile("🖼️", stringResource(R.string.stat_completed), stringResource(R.string.stat_count, state.completedTotal), Modifier.weight(1f))
+        StatTile("🖼️", stringResource(R.string.stat_completed), stringResource(R.string.stat_count, state.completedTotal), Modifier.weight(1f), onClick = onOpenGallery, showChevron = true)
     }
 }
 
 @Composable
-private fun StatTile(emoji: String, label: String, value: String, modifier: Modifier) {
+private fun StatTile(emoji: String, label: String, value: String, modifier: Modifier, onClick: (() -> Unit)? = null, showChevron: Boolean = false) {
     Surface(modifier, shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surface) {
-        Row(Modifier.padding(horizontal = 12.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier).padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Text(emoji, style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.width(8.dp))
-            Column {
+            Column(Modifier.weight(1f)) {
                 Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             }
+            if (showChevron) Text("›", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

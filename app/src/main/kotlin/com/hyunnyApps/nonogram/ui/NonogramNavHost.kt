@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hyunnyApps.nonogram.AppContainer
+import com.hyunnyApps.nonogram.ui.gallery.GalleryScreen
 import com.hyunnyApps.nonogram.ui.game.GameScreen
 import com.hyunnyApps.nonogram.ui.game.GameViewModel
 import com.hyunnyApps.nonogram.ui.home.HomeScreen
@@ -25,6 +26,7 @@ private object Routes {
     const val SETTINGS = "settings"
     const val LICENSES = "licenses"
     const val TUTORIAL = "tutorial"
+    const val GALLERY = "gallery"
 
     fun pack(id: String) = "pack/${Uri.encode(id)}"
     fun game(source: String, id: String) = "game/${Uri.encode(source)}/${Uri.encode(id)}"
@@ -40,6 +42,7 @@ fun NonogramNavHost(container: AppContainer, modifier: Modifier = Modifier) {
                 onOpenPack = { nav.navigate(Routes.pack(it)) },
                 onOpenSettings = { nav.navigate(Routes.SETTINGS) },
                 onOpenTutorial = { nav.navigate(Routes.TUTORIAL) { launchSingleTop = true } },
+                onOpenGallery = { nav.navigate(Routes.GALLERY) },
             )
         }
         composable(Routes.PACK, arguments = listOf(navArgument(PackViewModel.ARG_PACK_ID) { type = NavType.StringType })) {
@@ -69,12 +72,16 @@ fun NonogramNavHost(container: AppContainer, modifier: Modifier = Modifier) {
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 container.consent,
+                container.player,
                 onBack = { nav.popBackStack() },
                 onOpenRules = { nav.navigate(Routes.TUTORIAL) },
                 onOpenLicenses = { nav.navigate(Routes.LICENSES) },
             )
         }
         composable(Routes.LICENSES) { LicensesScreen(onBack = { nav.popBackStack() }) }
+        composable(Routes.GALLERY) {
+            GalleryScreen(onBack = { nav.popBackStack() }, onOpenPuzzle = { source, id -> nav.navigate(Routes.game(source, id)) })
+        }
         composable(Routes.TUTORIAL) {
             TutorialScreen(onMarkSeen = container.player::markTutorialSeen, onDone = { nav.popBackStack() })
         }

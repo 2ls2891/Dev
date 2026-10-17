@@ -72,6 +72,8 @@ data class GameUiState(
     val rewardedReady: Boolean = false,
     val elapsedMs: Long = 0,
     val completed: Boolean = false,
+    /** 이번에 막 완성했는지 (완성 연출은 이때만 재생, 다시 열면 바로 결과 화면) */
+    val justCompleted: Boolean = false,
     val nextId: String? = null,
 )
 
@@ -283,7 +285,7 @@ class GameViewModel(
         if (_state.value.completed || !s.isSolved()) return
         stopTimer()
         completedAtMs = System.currentTimeMillis()
-        _state.update { it.copy(completed = true, lastHint = null, elapsedMs = accumulatedMs) }
+        _state.update { it.copy(completed = true, justCompleted = true, lastHint = null, activeCell = -1, elapsedMs = accumulatedMs) }
         val r = ref ?: return
         if (r.source == DAILY) {
             container.appScope.launch {
@@ -305,7 +307,7 @@ class GameViewModel(
         accumulatedMs = 0
         savedVersion = fresh.version
         completedAtMs = null
-        _state.update { it.copy(completed = false, elapsedMs = 0, hintsUsed = 0, lastHint = null) }
+        _state.update { it.copy(completed = false, justCompleted = false, elapsedMs = 0, hintsUsed = 0, lastHint = null) }
         publishBoard()
         if (resumed) startTimer()
         container.appScope.launch { container.progress.delete(puzzleId) }

@@ -122,6 +122,18 @@ val LevelColors = listOf(
 
 val LocalBoardColors = staticCompositionLocalOf { LightBoard }
 
+/** 칠하기 색 선택지. 다크 모드에서는 밝은 쪽 색을 써서 대비를 유지한다 */
+data class InkOption(val light: Color, val dark: Color)
+
+val InkOptions = listOf(
+    InkOption(Ink, Color(0xFFECE9F5)), // 먹색 (기본)
+    InkOption(Color(0xFF4F46E5), Color(0xFFA5A1FF)), // 인디고
+    InkOption(Color(0xFF15803D), Color(0xFF4ADE80)), // 숲
+    InkOption(Color(0xFF9F1239), Color(0xFFFB7185)), // 와인
+    InkOption(Color(0xFF0369A1), Color(0xFF38BDF8)), // 바다
+    InkOption(Color(0xFF7C4A1E), Color(0xFFD6A274)), // 코코아
+)
+
 private val AppTypography = Typography().let { t ->
     t.copy(
         headlineLarge = t.headlineLarge.copy(fontWeight = FontWeight.ExtraBold, fontSize = 30.sp, letterSpacing = (-0.5).sp),
@@ -139,8 +151,10 @@ private val AppShapes = Shapes(
 )
 
 @Composable
-fun NonogramTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalBoardColors provides if (dark) DarkBoard else LightBoard) {
+fun NonogramTheme(dark: Boolean = isSystemInDarkTheme(), inkIndex: Int = 0, content: @Composable () -> Unit) {
+    val ink = InkOptions.getOrElse(inkIndex) { InkOptions[0] }
+    val board = (if (dark) DarkBoard else LightBoard).copy(monoFill = if (dark) ink.dark else ink.light)
+    CompositionLocalProvider(LocalBoardColors provides board) {
         MaterialTheme(
             colorScheme = if (dark) Dark else Light,
             typography = AppTypography,

@@ -36,6 +36,11 @@ import com.hyunnyApps.nonogram.ui.home.KIND_COLOR
 import com.hyunnyApps.nonogram.ui.pack.PackScreen
 import com.hyunnyApps.nonogram.ui.pack.PackViewModel
 import com.hyunnyApps.nonogram.ui.theme.NonogramTheme
+import com.hyunnyApps.nonogram.data.DAILY
+import com.hyunnyApps.nonogram.data.PuzzleProgress
+import com.hyunnyApps.nonogram.ui.gallery.GalleryScreen
+import com.hyunnyApps.nonogram.ui.gallery.GalleryViewModel
+import com.hyunnyApps.nonogram.ui.settings.SettingsScreen
 import com.hyunnyApps.nonogram.ui.tutorial.TutorialScreen
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -57,9 +62,9 @@ abstract class ScreenshotBase {
     private val out = System.getProperty("roborazzi.output.dir") ?: "build/screenshots"
 
     /** 실제 앱처럼 하단에 광고 배너 자리를 둔다 */
-    protected fun show(dark: Boolean = false, content: @Composable () -> Unit) {
+    protected fun show(dark: Boolean = false, ink: Int = 0, content: @Composable () -> Unit) {
         rule.setContent {
-            NonogramTheme(dark = dark) {
+            NonogramTheme(dark = dark, inkIndex = ink) {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     Column(Modifier.fillMaxSize()) {
                         Box(Modifier.weight(1f)) { content() }
@@ -73,6 +78,22 @@ abstract class ScreenshotBase {
         }
     }
 
+    /** 정답대로 칠해서 완성시킨다 */
+    protected fun solve(vm: GameViewModel) {
+        val grid = Grid.fromRows(vm.state.value.puzzle!!.rows)
+        for (i in grid.cells.indices) if (grid.cells[i] != 0) {
+            vm.selectTool(grid.cells[i]); vm.onStrokeStart(i); vm.onStrokeEnd()
+        }
+    }
+
+    /** 컬렉션 화면용: 퍼즐 몇 개를 완성한 상태로 저장 */
+    protected fun markCompleted(source: String, count: Int) = runBlocking {
+        val puzzles = if (source == DAILY) container.content.daily().puzzles else container.content.pack(source).puzzles
+        puzzles.take(count).forEach { p ->
+            container.progress.save(p.id, source, PuzzleProgress(p.w, p.h, "", completed = true))
+        }
+    }
+
     protected fun Int.dp() = androidx.compose.ui.unit.Dp(this.toFloat())
 
     protected fun capture(name: String) {
@@ -80,9 +101,9 @@ abstract class ScreenshotBase {
         rule.onRoot().captureRoboImage("$out/$name.png")
     }
 
-    protected fun game(id: String, source: String = "mono-nature-1"): GameViewModel {
+    protected fun game(id: String, source: String = "mono-nature-1", ink: Int = 0): GameViewModel {
         val vm = GameViewModel(SavedStateHandle(mapOf(GameViewModel.ARG_SOURCE to source, GameViewModel.ARG_PUZZLE_ID to id)), container)
-        show { GameScreen(container.rewarded, {}, { _, _ -> }, vm) }
+        show(ink = ink) { GameScreen(container.rewarded, {}, { _, _ -> }, vm) }
         rule.waitUntil(60_000) { !vm.state.value.loading }
         return vm
     }
@@ -159,9 +180,9 @@ class GameCompletedScreenshot : ScreenshotBase() {
     @Test
     fun gameCompleted() {
         val vm = game("fe-dog-m15")
-        val grid = Grid.fromRows(vm.state.value.puzzle!!.rows)
-        for (i in grid.cells.indices) if (grid.cells[i] != 0) { vm.onStrokeStart(i); vm.onStrokeEnd() }
-        rule.waitUntil(5_000) { vm.state.value.completed }
+        solve(vm)
+        rule.waitUntil(10_000) { vm.state.value.completed }
+        rule.mainClock.advanceTimeBy(3_000)
         capture("07_game_completed")
     }
 }
@@ -195,5 +216,72 @@ class RulesScreenshot : ScreenshotBase() {
     fun rules() {
         show { Column(Modifier.verticalScroll(rememberScrollState()).padding(24.dp())) { RulesContent(includeColor = true) } }
         capture("11_rules")
+    }
+}
+
+class RevealMidScreenshot : ScreenshotBase() {
+    @Test
+    fun revealMid() {
+        val vm = game("fe-dog-m15")
+        rule.mainClock.autoAdvance = false
+        solve(vm)
+        rule.mainClock.advanceTimeBy(1_100)
+        rule.onRoot().captureRoboImage("$out/12_reveal_mid.png")
+    }
+}
+
+class RevealEarlyScreenshot : ScreenshotBase() {
+    @Test
+    fun revealEarly() {
+        val vm = game("fe-cherries-c20", source = "color-food-1")
+        rule.mainClock.autoAdvance = false
+        solve(vm)
+        rule.mainClock.advanceTimeBy(700)
+        rule.onRoot().captureRoboImage("$out/13_reveal_color_early.png")
+    }
+}
+
+class GalleryScreenshot : ScreenshotBase() {
+    @Test
+    fun gallery() {
+        markCompleted(DAILY, 3)
+        markCompleted("mono-nature-1", 9)
+        markCompleted("color-food-1", 6)
+        val vm = GalleryViewModel(container)
+        show { GalleryScreen({}, { _, _ -> }, vm) }
+        rule.waitUntil(60_000) { !vm.state.value.loading && vm.state.value.collected > 0 }
+        capture("14_gallery")
+    }
+}
+
+class GalleryEmptyScreenshot : ScreenshotBase() {
+    @Test
+    fun galleryEmpty() {
+        val vm = GalleryViewModel(container)
+        show { GalleryScreen({}, { _, _ -> }, vm) }
+        rule.waitUntil(60_000) { !vm.state.value.loading }
+        capture("15_gallery_empty")
+    }
+}
+
+class SettingsInkScreenshot : ScreenshotBase() {
+    @Test
+    fun settingsInk() {
+        runBlocking { container.player.setInk(1) }
+        show(ink = 1) { SettingsScreen(container.consent, container.player, {}, {}, {}) }
+        capture("16_settings_ink")
+    }
+}
+
+class GameIndigoScreenshot : ScreenshotBase() {
+    @Test
+    fun gameIndigo() {
+        val vm = game("fe-dog-m15", ink = 1)
+        val grid = Grid.fromRows(vm.state.value.puzzle!!.rows)
+        for (i in 0 until grid.width * (grid.height * 2 / 3)) {
+            vm.selectTool(if (grid.cells[i] != 0) 1 else Mark.CROSS)
+            vm.onStrokeStart(i); vm.onStrokeEnd()
+        }
+        capture("17_game_ink_indigo")
     }
 }

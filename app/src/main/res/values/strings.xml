@@ -94,6 +94,22 @@
     <string name="settings_test_ads">테스트 광고 사용 중 (디버그 빌드)</string>
     <string name="licenses_intro">이 앱은 다음 오픈소스 소프트웨어와 콘텐츠를 사용합니다.</string>
 
+    <string name="settings_ink">칠하기 색</string>
+    <string name="settings_ink_desc">기본 퍼즐에서 칸을 칠하는 색이에요</string>
+    <string name="ink_0">먹색</string>
+    <string name="ink_1">인디고</string>
+    <string name="ink_2">숲</string>
+    <string name="ink_3">와인</string>
+    <string name="ink_4">바다</string>
+    <string name="ink_5">코코아</string>
+    <string name="gallery_title">내 컬렉션</string>
+    <string name="gallery_progress">%2$d개 중 %1$d개 수집</string>
+    <string name="gallery_empty_title">아직 완성한 그림이 없어요</string>
+    <string name="gallery_empty_text">퍼즐을 완성하면 숨은 컬러 그림이 여기에 모여요</string>
+    <string name="gallery_empty_button">퍼즐 하러 가기</string>
+    <string name="gallery_daily">오늘의 퍼즐</string>
+    <string name="gallery_open">컬렉션 보기</string>
+
     <plurals name="reward_text">
         <item quantity="other">짧은 광고를 보면 힌트 %1$d개를 받아요. 매일 무료 힌트 3개도 채워져요.</item>
     </plurals>

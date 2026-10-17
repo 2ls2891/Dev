@@ -1,6 +1,12 @@
 package com.hyunnyApps.nonogram.ui.game
 
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,7 +62,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
@@ -373,34 +382,70 @@ private fun ActionButton(icon: ImageVector, label: String, enabled: Boolean, mod
 @Composable
 private fun CompletedContent(state: GameUiState, onRestart: () -> Unit, onBack: () -> Unit, onNext: (String) -> Unit) {
     val puzzle = state.puzzle ?: return
+    val board = state.board
     val cs = MaterialTheme.colorScheme
+    val haptic = LocalHapticFeedback.current
     var confirmRestart by rememberSaveable { mutableStateOf(false) }
-    // 버튼은 화면 위쪽~가운데에 두어 하단 배너와 멀리 떨어뜨린다
-    Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp, vertical = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Text("🎉 " + stringResource(R.string.game_completed), style = MaterialTheme.typography.headlineLarge)
-        Surface(shape = MaterialTheme.shapes.large, color = cs.surface, shadowElevation = 2.dp) {
-            PixelPicture(
-                puzzle.reveal,
-                Modifier.widthIn(max = 260.dp).fillMaxWidth().aspectRatio(puzzle.w.toFloat() / puzzle.h).padding(20.dp),
-            )
+    // 막 완성했으면 색 입히기 연출 후 결과 패널, 다시 열었으면 바로 결과
+    val animate = state.justCompleted
+    val progress = remember(puzzle.id) { Animatable(if (animate) 0f else 1f) }
+    var panelVisible by rememberSaveable(puzzle.id) { mutableStateOf(!animate) }
+    LaunchedEffect(puzzle.id, animate) {
+        if (animate && progress.value < 1f) {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            progress.animateTo(1f, tween(durationMillis = 2000, easing = LinearEasing))
         }
-        Text(puzzle.title.text(), style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            ResultTile(stringResource(R.string.game_time), formatElapsed(state.elapsedMs))
-            ResultTile(stringResource(R.string.game_hints_label), state.hintsUsed.toString())
+        panelVisible = true
+    }
+    val leftSlots = remember(state.rowClues) { state.rowClues.maxOfOrNull { it.size }?.coerceAtLeast(1) ?: 1 }
+    val topSlots = remember(state.colClues) { state.colClues.maxOfOrNull { it.size }?.coerceAtLeast(1) ?: 1 }
+
+    Column(Modifier.fillMaxSize()) {
+        Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp)) {
+            // 연출 초반: 풀던 보드(단서·격자·✕)를 그대로 깔고 흐리게 사라지게 한다
+            val boardAlpha = 1f - segment(progress.value, 0f, 0.25f)
+            if (board != null && boardAlpha > 0f) {
+                BoardView(
+                    puzzleKey = puzzle.id + "-reveal",
+                    columns = puzzle.w,
+                    rows = puzzle.h,
+                    rowClues = state.rowClues,
+                    colClues = state.colClues,
+                    board = board,
+                    palette = puzzle.palette.map(::parseHexColor),
+                    isColor = puzzle.kind == "color",
+                    highlight = null,
+                    activeCell = -1,
+                    enabled = false,
+                    onStrokeStart = {}, onStrokeMove = {}, onStrokeEnd = {}, onStrokeCancel = {},
+                    modifier = Modifier.fillMaxWidth().alpha(boardAlpha),
+                )
+            }
+            RevealBoard(puzzle, leftSlots, topSlots, progress.value, Modifier.fillMaxSize())
         }
-        Spacer(Modifier.height(4.dp))
-        state.nextId?.let { next ->
-            Button(onClick = { onNext(next) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                Text(stringResource(R.string.game_next), style = MaterialTheme.typography.titleMedium)
+        AnimatedVisibility(panelVisible, enter = expandVertically(tween(450)) + fadeIn(tween(450))) {
+            // 버튼은 패널 위쪽에 두고 아래 여백을 넉넉히 → 하단 배너와 거리 확보
+            Column(
+                Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text("🎉 " + stringResource(R.string.game_completed) + "  " + puzzle.title.text(), style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    ResultTile(stringResource(R.string.game_time), formatElapsed(state.elapsedMs))
+                    ResultTile(stringResource(R.string.game_hints_label), state.hintsUsed.toString())
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f).height(52.dp)) { Text(stringResource(R.string.game_back_to_list)) }
+                    state.nextId?.let { next ->
+                        Button(onClick = { onNext(next) }, modifier = Modifier.weight(1f).height(52.dp)) {
+                            Text(stringResource(R.string.game_next), style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+                }
+                TextButton(onClick = { confirmRestart = true }) { Text(stringResource(R.string.game_restart), color = cs.onSurfaceVariant) }
             }
         }
-        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp)) { Text(stringResource(R.string.game_back_to_list)) }
-        TextButton(onClick = { confirmRestart = true }) { Text(stringResource(R.string.game_restart), color = cs.onSurfaceVariant) }
     }
     if (confirmRestart) {
         AlertDialog(
