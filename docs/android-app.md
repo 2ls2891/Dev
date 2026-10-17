@@ -18,7 +18,7 @@ MVP 대신 MVVM을 고른 이유: Compose는 상태를 관찰해 다시 그리�
 화면 회전·프로세스 재생성 시 상태 보존(ViewModel, SavedStateHandle)을 플랫폼이 지원한다. Google 공식 권장 구조이기도 하다.
 
 ```
-app/src/main/kotlin/nonogram/app/
+app/src/main/kotlin/com/hyunnyApps/nonogram/
 ├─ NonogramApplication, AppContainer, MainActivity
 ├─ ads/      AdConfig, ConsentManager(UMP), AdsManager(초기화), RewardedAdManager, BannerAd
 ├─ data/     ContentRepository, ProgressRepository, PlayerRepository
@@ -73,22 +73,37 @@ CI에서는 `-Padmob.appId=…` 처럼 넘겨도 된다(파일보다 우선).
 
 ## 로컬에서 실행하기
 
-필요: **Android Studio Quail 4 (2026.1.4) 이상** (AGP 9.4 지원 버전), Android 8.0(API 26) 이상 기기 또는 에뮬레이터.
-Python·콘텐츠 도구는 필요 없다 (생성된 퍼즐이 `content/packs/`에 커밋되어 있음).
-
+### 터미널만으로 (Android Studio 불필요) — 권장
 ```bash
 git clone -b claude/blissful-pasteur-grgmnf https://github.com/2ls2891/Dev.git nonogram
+cd nonogram
+scripts/run-android.sh          # SDK 설치 → 에뮬레이터 생성·부팅 → 빌드 → 설치 → 실행
 ```
-1. Android Studio → Open → 클론한 폴더 (`local.properties`는 Studio가 자동 생성)
-2. Gradle Sync가 끝나면 실행 구성 `app` 선택 → 기기/에뮬레이터 선택 → Run
-3. 디버그 빌드는 Google 테스트 광고가 나온다 (배너에 "Test Ad" 표시)
+- 필요한 것: **JDK 17+** 하나 (`brew install --cask temurin@21`). 나머지(SDK, 에뮬레이터, 시스템 이미지)는 스크립트가 받는다.
+- 처음 한 번은 약 3GB를 받는다. 이후 실행은 빌드·설치만 하므로 빠르다 (에뮬레이터가 켜져 있으면 재사용).
+- SDK 위치: `ANDROID_HOME` → `local.properties` → `~/Library/Android/sdk` (Android Studio 기본 위치와 같아 공유된다)
+- Apple Silicon은 arm64 이미지, Intel 맥은 x86_64 이미지를 자동 선택 (Android 16 / API 36, Google Play 포함)
 
-명령줄: `./gradlew :app:installDebug` (ANDROID_HOME 또는 local.properties 의 sdk.dir 필요)
+| 명령 | 용도 |
+|---|---|
+| `scripts/run-android.sh --logs` | 실행 후 앱 로그 보기 (크래시 확인) |
+| `scripts/run-android.sh --eea` | 유럽 사용자처럼 광고 동의 양식 테스트 |
+| `scripts/run-android.sh --wipe` | 에뮬레이터 초기화 후 실행 (첫 실행 상태) |
+| `scripts/run-android.sh --device` | USB로 연결한 실기기에 설치 |
+| `scripts/run-android.sh --stop` | 에뮬레이터 종료 |
+
+코드를 고친 뒤에는 같은 명령을 다시 실행하면 된다.
+
+### Android Studio로
+**Android Studio Quail 4 (2026.1.4) 이상** (AGP 9.4 지원 버전)에서 폴더를 열고 `app` 실행 구성을 Run.
+
+디버그 빌드는 Google 테스트 광고가 나온다 (배너에 "Test Ad" 표시).
+Python·콘텐츠 도구는 필요 없다 (생성된 퍼즐이 `content/packs/`에 커밋되어 있음).
 
 ## 출시 전 체크리스트
 - [x] `applicationId` = `com.hyunnyApps.nonogram` (디버그: `com.hyunnyApps.nonogram.debug`)
 - [ ] `app/admob.properties` 운영 ID 입력
-- [ ] 데일리 시작일(epoch) 확정 (`puzzle-tool/src/main/kotlin/nonogram/tool/Builder.kt` 의 `epoch`, 현재 2027-01-04)
+- [ ] 데일리 시작일(epoch) 확정 (`puzzle-tool/src/main/kotlin/com/hyunnyApps/nonogram/tool/Builder.kt` 의 `epoch`, 현재 2027-01-04)
 - [ ] 앱 이름·아이콘 확정 (`res/values*/strings.xml`, `res/drawable/ic_launcher_foreground.xml`)
 - [ ] 서명 키 / Play App Signing 설정, `./gradlew bundleRelease`
 - [ ] 개발자 웹사이트에 app-ads.txt 게시 → AdMob 앱 검토

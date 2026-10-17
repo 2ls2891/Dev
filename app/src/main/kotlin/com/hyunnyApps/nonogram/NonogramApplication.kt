@@ -1,0 +1,13 @@
+package com.hyunnyApps.nonogram
+
+import android.app.Application
+
+class NonogramApplication : Application() {
+    lateinit var container: AppContainer
+        private set
+
+    override fun onCreate() {
+        super.onCreate()
+        container = AppContainer(this)
+    }
+}

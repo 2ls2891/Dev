@@ -41,7 +41,7 @@ val releaseAdProblems: List<String> = releaseAds.mapNotNull { (key, value) ->
 }
 
 android {
-    namespace = "nonogram.app"
+    namespace = "com.hyunnyApps.nonogram"
     compileSdk = 37
 
     defaultConfig {

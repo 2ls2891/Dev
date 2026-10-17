@@ -14,6 +14,7 @@
 현재 콘텐츠: [content/REPORT.md](content/REPORT.md)
 
 ```bash
+scripts/run-android.sh         # 터미널만으로 에뮬레이터에 설치·실행 (JDK 17+만 있으면 됨)
 ./gradlew test                 # core(솔버·게임 규칙·번들 콘텐츠) + 앱 단위 테스트
 ./gradlew :app:assembleDebug   # 디버그 APK (Google 테스트 광고)
 ./gradlew :app:lintDebug

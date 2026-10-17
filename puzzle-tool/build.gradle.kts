@@ -21,7 +21,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("nonogram.tool.MainKt")
+    mainClass.set("com.hyunnyApps.nonogram.tool.MainKt")
 }
 
 tasks.test { useJUnitPlatform() }
