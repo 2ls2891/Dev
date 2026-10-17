@@ -45,8 +45,8 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        // ⚠️ 스토어에 한 번 올리면 바꿀 수 없다. 출시 전에 본인 도메인 기반으로 확정할 것.
-        applicationId = "com.example.nonogram"
+        // ⚠️ 스토어에 한 번 올리면 바꿀 수 없다. (디버그 빌드는 .debug 가 붙어 운영 앱과 함께 설치 가능)
+        applicationId = "com.hyunnyApps.nonogram"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

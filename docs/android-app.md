@@ -71,8 +71,22 @@ CI에서는 `-Padmob.appId=…` 처럼 넘겨도 된다(파일보다 우선).
 - 손상되었거나 판 크기가 다른 저장 파일은 무시하고 새로 시작한다
 - 힌트·연속 기록: DataStore
 
+## 로컬에서 실행하기
+
+필요: **Android Studio Quail 4 (2026.1.4) 이상** (AGP 9.4 지원 버전), Android 8.0(API 26) 이상 기기 또는 에뮬레이터.
+Python·콘텐츠 도구는 필요 없다 (생성된 퍼즐이 `content/packs/`에 커밋되어 있음).
+
+```bash
+git clone -b claude/blissful-pasteur-grgmnf https://github.com/2ls2891/Dev.git nonogram
+```
+1. Android Studio → Open → 클론한 폴더 (`local.properties`는 Studio가 자동 생성)
+2. Gradle Sync가 끝나면 실행 구성 `app` 선택 → 기기/에뮬레이터 선택 → Run
+3. 디버그 빌드는 Google 테스트 광고가 나온다 (배너에 "Test Ad" 표시)
+
+명령줄: `./gradlew :app:installDebug` (ANDROID_HOME 또는 local.properties 의 sdk.dir 필요)
+
 ## 출시 전 체크리스트
-- [ ] `applicationId` 확정 (`app/build.gradle.kts`, 현재 `com.example.nonogram` — Play에서 거부되므로 반드시 변경)
+- [x] `applicationId` = `com.hyunnyApps.nonogram` (디버그: `com.hyunnyApps.nonogram.debug`)
 - [ ] `app/admob.properties` 운영 ID 입력
 - [ ] 데일리 시작일(epoch) 확정 (`puzzle-tool/src/main/kotlin/nonogram/tool/Builder.kt` 의 `epoch`, 현재 2027-01-04)
 - [ ] 앱 이름·아이콘 확정 (`res/values*/strings.xml`, `res/drawable/ic_launcher_foreground.xml`)
