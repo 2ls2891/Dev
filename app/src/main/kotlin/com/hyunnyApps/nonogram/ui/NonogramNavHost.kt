@@ -42,7 +42,12 @@ private object Routes {
  * @param openDaily 알림을 눌러 들어온 경우 true → 오늘의 퍼즐로 바로 이동
  */
 @Composable
-fun NonogramNavHost(container: AppContainer, modifier: Modifier = Modifier, openDaily: Boolean = false) {
+fun NonogramNavHost(
+    container: AppContainer,
+    modifier: Modifier = Modifier,
+    openDaily: Boolean = false,
+    onDailyOpened: () -> Unit = {},
+) {
     val nav = rememberNavController()
     val hapticOn by container.player.hapticOn.collectAsStateWithLifecycle(initialValue = true)
 
@@ -52,6 +57,7 @@ fun NonogramNavHost(container: AppContainer, modifier: Modifier = Modifier, open
         val index = DailyCalendar.dayIndex(LocalDate.parse(daily.epoch), container.today())
         val puzzle = daily.puzzles[DailyCalendar.puzzlePosition(index, daily.puzzles.size)]
         nav.navigate(Routes.game(DAILY, puzzle.id)) { launchSingleTop = true }
+        onDailyOpened()
     }
 
     NavHost(nav, startDestination = Routes.HOME, modifier = modifier) {

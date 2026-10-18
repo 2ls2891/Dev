@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -26,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
@@ -36,6 +35,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hyunnyApps.nonogram.R
+import com.hyunnyApps.nonogram.ui.components.Adaptive
+import com.hyunnyApps.nonogram.ui.components.TopSafeInsets
 import com.hyunnyApps.nonogram.ui.components.LevelTag
 import com.hyunnyApps.nonogram.ui.components.NoteTopBar
 import com.hyunnyApps.nonogram.ui.components.PaperCard
@@ -55,7 +56,7 @@ fun PackScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val note = LocalNoteColors.current
-    Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
+    Column(Modifier.fillMaxSize().windowInsetsPadding(TopSafeInsets)) {
         NoteTopBar(state.pack?.title?.text() ?: "", onBack) {
             state.pack?.let { p ->
                 Text(stringResource(R.string.pack_header_progress, state.completed, p.puzzles.size), style = hand18, color = note.inkSoft)
@@ -65,7 +66,7 @@ fun PackScreen(
             state.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = note.ink) }
             state.error -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(stringResource(R.string.error_load)) }
             else -> LazyVerticalGrid(
-                columns = GridCells.Adaptive(100.dp),
+                columns = GridCells.Adaptive(Adaptive.tileMinSize(LocalConfiguration.current.screenWidthDp.dp)),
                 contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 24.dp),
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),

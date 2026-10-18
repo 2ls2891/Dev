@@ -7,24 +7,26 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
@@ -42,17 +44,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hyunnyApps.nonogram.R
+import com.hyunnyApps.nonogram.ui.components.TopSafeInsets
 import com.hyunnyApps.nonogram.ads.RewardedAdManager
 import com.hyunnyApps.nonogram.data.DAILY
 import com.hyunnyApps.nonogram.data.PlayerRepository
+import com.hyunnyApps.nonogram.ui.components.Adaptive
 import com.hyunnyApps.nonogram.ui.components.LevelTag
 import com.hyunnyApps.nonogram.ui.components.PaperCard
 import com.hyunnyApps.nonogram.ui.components.PencilUnderline
@@ -101,12 +107,8 @@ fun HomeScreen(
             CircularProgressIndicator(Modifier.align(Alignment.Center), color = LocalNoteColors.current.ink)
             return@Box
         }
-        LazyColumn(
-            Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars),
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
-        ) {
-            item { Header(state, onOpenTutorial, onOpenSettings) }
+        // 오늘 할 일: 기록 끊김, 오늘의 퍼즐, 이어하기, 처음 안내, 알림 제안
+        val todayItems: LazyListScope.() -> Unit = {
             state.streakLost?.let { lost ->
                 item {
                     StreakLostCard(lost) {
@@ -124,10 +126,46 @@ fun HomeScreen(
             if (state.showReminderCard) {
                 item { ReminderCard(onYes = { setReminder(19) }, onNo = viewModel::dismissReminderCard) }
             }
+        }
+        // 퍼즐 책장: 컬렉션, 기본/컬러 탭, 테마별 노트
+        val libraryItems: LazyListScope.() -> Unit = {
             item { CollectionRow(state.completedTotal, state.totalPuzzles, onOpenGallery) }
             item { NoteTabs(state.kind, viewModel::selectKind) }
             items(state.sections, key = { "${state.kind}-${it.theme}" }) { section ->
                 ThemeSectionView(section) { onOpenPack(it) }
+            }
+        }
+        BoxWithConstraints(Modifier.fillMaxSize().windowInsetsPadding(TopSafeInsets)) {
+            if (maxWidth >= Adaptive.TwoPaneMinWidth) {
+                // 넓은 화면(가로 태블릿 등): 왼쪽 오늘 할 일 | 오른쪽 책장. 각자 스크롤
+                val leftWidth = (maxWidth * 0.4f).coerceIn(360.dp, 460.dp)
+                Row(Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        Modifier.width(leftWidth).fillMaxHeight(),
+                        contentPadding = PaddingValues(start = 24.dp, end = 12.dp, top = 8.dp, bottom = 28.dp),
+                        verticalArrangement = Arrangement.spacedBy(18.dp),
+                    ) {
+                        item { Header(state, onOpenTutorial, onOpenSettings) }
+                        todayItems()
+                    }
+                    LazyColumn(
+                        Modifier.weight(1f).fillMaxHeight(),
+                        contentPadding = PaddingValues(start = 12.dp, end = 24.dp, top = 16.dp, bottom = 28.dp),
+                        verticalArrangement = Arrangement.spacedBy(18.dp),
+                    ) { libraryItems() }
+                }
+            } else {
+                // 폰·폴드·세로 태블릿: 한 줄. 너무 넓으면 가운데 640dp 안에
+                val side = Adaptive.sidePadding(maxWidth)
+                LazyColumn(
+                    Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(start = side, end = side, top = 8.dp, bottom = 28.dp),
+                    verticalArrangement = Arrangement.spacedBy(18.dp),
+                ) {
+                    item { Header(state, onOpenTutorial, onOpenSettings) }
+                    todayItems()
+                    libraryItems()
+                }
             }
         }
         SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter))
@@ -138,8 +176,11 @@ fun HomeScreen(
 private fun Header(state: HomeUiState, onHelp: () -> Unit, onSettings: () -> Unit) {
     val note = LocalNoteColors.current
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Column(Modifier.weight(1f)) {
-            Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge, color = note.ink)
+        Column(Modifier.weight(1f).padding(end = 8.dp)) {
+            Text(
+                stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge, color = note.ink, maxLines = 1,
+                autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = MaterialTheme.typography.headlineLarge.fontSize, stepSize = 0.5.sp),
+            )
             PencilUnderline(width = 104.dp)
         }
         HudItem(PixelIcons.Flame, state.streak.toString())
@@ -262,18 +303,59 @@ private fun PencilProgress(fraction: Float, modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * 아이콘 + 제목/설명 + 버튼 한 개짜리 카드 내용.
+ * 넓으면 버튼을 오른쪽에, 좁거나(폰·폴드 커버·태블릿 두 단의 왼쪽) 글꼴이 크면 글이 눌리지 않게 버튼을 아래로 내린다.
+ */
+@Composable
+private fun ActionCardContent(
+    icon: @Composable () -> Unit,
+    title: String,
+    text: String,
+    buttonWidth: Dp,
+    button: @Composable (Modifier) -> Unit,
+) {
+    val note = LocalNoteColors.current
+    val fontScale = LocalDensity.current.fontScale
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val stacked = maxWidth < 460.dp || fontScale > 1.3f
+        val texts: @Composable (Modifier) -> Unit = { modifier ->
+            Column(modifier) {
+                Text(title, style = MaterialTheme.typography.titleLarge, color = note.ink)
+                Text(text, style = MaterialTheme.typography.bodySmall, color = note.inkSoft)
+            }
+        }
+        if (stacked) {
+            Column(Modifier.padding(14.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    icon()
+                    Spacer(Modifier.width(12.dp))
+                    texts(Modifier.weight(1f))
+                }
+                Spacer(Modifier.height(10.dp))
+                button(Modifier.fillMaxWidth())
+            }
+        } else {
+            Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                icon()
+                Spacer(Modifier.width(12.dp))
+                texts(Modifier.weight(1f))
+                button(Modifier.width(buttonWidth))
+            }
+        }
+    }
+}
+
 @Composable
 private fun StreakLostCard(lost: Int, onKeep: () -> Unit) {
-    val note = LocalNoteColors.current
     PaperCard(rotation = -0.6f) {
-        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            PixelIcon(PixelIcons.Flame, size = 34.dp)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(stringResource(R.string.streak_lost_title, lost), style = MaterialTheme.typography.titleLarge, color = note.ink)
-                Text(stringResource(R.string.streak_lost_text), style = MaterialTheme.typography.bodySmall, color = note.inkSoft)
-            }
-            StickerButton(stringResource(R.string.streak_keep), onKeep, style = StickerStyle.Highlight, height = 44.dp, modifier = Modifier.width(120.dp))
+        ActionCardContent(
+            icon = { PixelIcon(PixelIcons.Flame, size = 34.dp) },
+            title = stringResource(R.string.streak_lost_title, lost),
+            text = stringResource(R.string.streak_lost_text),
+            buttonWidth = 140.dp,
+        ) { modifier ->
+            StickerButton(stringResource(R.string.streak_keep), onKeep, style = StickerStyle.Highlight, height = 44.dp, modifier = modifier)
         }
     }
 }
@@ -282,14 +364,13 @@ private fun StreakLostCard(lost: Int, onKeep: () -> Unit) {
 private fun TutorialCard(onClick: () -> Unit) {
     val note = LocalNoteColors.current
     PaperCard(rotation = 0.5f, onClick = onClick) {
-        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            PixelIcon(PixelIcons.Help, size = 30.dp, tint = note.redPencil)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(stringResource(R.string.tutorial_card_title), style = MaterialTheme.typography.titleLarge, color = note.ink)
-                Text(stringResource(R.string.tutorial_card_text), style = MaterialTheme.typography.bodySmall, color = note.inkSoft)
-            }
-            StickerButton(stringResource(R.string.tutorial_card_button), onClick, style = StickerStyle.Plain, height = 44.dp, modifier = Modifier.width(96.dp))
+        ActionCardContent(
+            icon = { PixelIcon(PixelIcons.Help, size = 30.dp, tint = note.redPencil) },
+            title = stringResource(R.string.tutorial_card_title),
+            text = stringResource(R.string.tutorial_card_text),
+            buttonWidth = 110.dp,
+        ) { modifier ->
+            StickerButton(stringResource(R.string.tutorial_card_button), onClick, style = StickerStyle.Plain, height = 44.dp, modifier = modifier)
         }
     }
 }

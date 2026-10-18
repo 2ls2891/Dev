@@ -15,22 +15,26 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -60,10 +64,14 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -72,6 +80,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hyunnyApps.nonogram.R
+import com.hyunnyApps.nonogram.ui.components.TopSafeInsets
 import com.hyunnyApps.nonogram.ads.RewardedAdManager
 import com.hyunnyApps.nonogram.core.game.Mark
 import com.hyunnyApps.nonogram.data.DAILY
@@ -178,7 +187,7 @@ fun GameScreen(
         )
     }
 
-    Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
+    Box(Modifier.fillMaxSize().windowInsetsPadding(TopSafeInsets)) {
         Column(Modifier.fillMaxSize()) {
             GameTopBar(state, onBack) { showRules = true }
             Box(Modifier.weight(1f).fillMaxWidth()) {
@@ -253,10 +262,16 @@ private fun GameTopBar(state: GameUiState, onBack: () -> Unit, onHelp: () -> Uni
                     },
                     style = MaterialTheme.typography.titleLarge,
                     color = note.ink,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     LevelTag(p.difficulty.level)
-                    Text(stringResource(R.string.size_format, p.w, p.h), style = hand18, color = note.inkSoft)
+                    // 큰 글꼴·좁은 화면에서 "15×13"이 두 줄로 갈라지지 않게
+                    Text(
+                        stringResource(R.string.size_format, p.w, p.h), style = hand18, color = note.inkSoft, maxLines = 1,
+                        autoSize = TextAutoSize.StepBased(minFontSize = 8.sp, maxFontSize = hand18.fontSize, stepSize = 0.5.sp),
+                    )
                 }
             }
         }
@@ -275,30 +290,28 @@ private fun PlayContent(state: GameUiState, viewModel: GameViewModel, flash: Lin
     val boardColors = LocalBoardColors.current
     val isColor = puzzle.kind == "color"
     val palette = remember(puzzle.id) { puzzle.palette.map(::parseHexColor) }
-    Column(Modifier.fillMaxSize()) {
-        // 보드 + 진행 상황을 남는 공간의 가운데에 둔다
-        Column(Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.Center) {
-            BoardView(
-                puzzleKey = puzzle.id,
-                columns = puzzle.w,
-                rows = puzzle.h,
-                rowClues = state.rowClues,
-                colClues = state.colClues,
-                board = board,
-                palette = palette,
-                isColor = isColor,
-                highlight = state.lastHint,
-                activeCell = state.activeCell,
-                enabled = !state.completed,
-                onStrokeStart = viewModel::onStrokeStart,
-                onStrokeMove = viewModel::onStrokeMove,
-                onStrokeEnd = viewModel::onStrokeEnd,
-                onStrokeCancel = viewModel::onStrokeCancel,
-                modifier = Modifier.weight(1f, fill = false).fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-                flash = flash,
-            )
-            StatusStrip(state, board, Modifier.padding(horizontal = 20.dp))
-        }
+    val boardView: @Composable (Modifier) -> Unit = { modifier ->
+        BoardView(
+            puzzleKey = puzzle.id,
+            columns = puzzle.w,
+            rows = puzzle.h,
+            rowClues = state.rowClues,
+            colClues = state.colClues,
+            board = board,
+            palette = palette,
+            isColor = isColor,
+            highlight = state.lastHint,
+            activeCell = state.activeCell,
+            enabled = !state.completed,
+            onStrokeStart = viewModel::onStrokeStart,
+            onStrokeMove = viewModel::onStrokeMove,
+            onStrokeEnd = viewModel::onStrokeEnd,
+            onStrokeCancel = viewModel::onStrokeCancel,
+            modifier = modifier,
+            flash = flash,
+        )
+    }
+    val toolbar: @Composable (Modifier, Boolean) -> Unit = { modifier, wrapColors ->
         GameToolbar(
             tool = state.tool,
             colors = if (isColor) palette else listOf(boardColors.monoFill),
@@ -310,9 +323,46 @@ private fun PlayContent(state: GameUiState, viewModel: GameViewModel, flash: Lin
             onUndo = viewModel::undo,
             onRedo = viewModel::redo,
             onHint = viewModel::requestHint,
+            modifier = modifier,
+            wrapColors = wrapColors,
         )
-        // 하단 배너와 조작 버튼 사이 여백 (오클릭 방지)
-        Spacer(Modifier.height(20.dp))
+    }
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val panelWidth = GameLayout.sidePanelWidth(maxWidth)
+        if (GameLayout.useSidePanel(maxWidth, maxHeight)) {
+            // 가로로 넓은 화면: 보드 | 조작부
+            Row(Modifier.fillMaxSize()) {
+                Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                    boardView(Modifier.weight(1f, fill = false).fillMaxWidth().padding(start = 12.dp, end = 8.dp, top = 8.dp, bottom = 12.dp))
+                }
+                SidePanel(panelWidth) {
+                    StatusStrip(state, board, Modifier.fillMaxWidth())
+                    toolbar(Modifier.fillMaxWidth(), true)
+                }
+            }
+        } else {
+            Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                // 보드 + 진행 상황을 남는 공간의 가운데에 둔다
+                Column(Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    boardView(Modifier.weight(1f, fill = false).fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp))
+                    StatusStrip(state, board, Modifier.widthIn(max = GameLayout.ControlsMaxWidth).fillMaxWidth().padding(horizontal = 20.dp))
+                }
+                toolbar(Modifier.widthIn(max = GameLayout.ControlsMaxWidth).fillMaxWidth().padding(horizontal = 16.dp), false)
+                // 하단 배너와 조작 버튼 사이 여백 (오클릭 방지)
+                Spacer(Modifier.height(20.dp))
+            }
+        }
+    }
+}
+
+/** 옆 배치의 오른쪽 패널. 높이가 모자라면 스크롤, 남으면 세로 가운데 */
+@Composable
+private fun SidePanel(width: Dp, content: @Composable () -> Unit) {
+    Box(Modifier.width(width).fillMaxHeight(), contentAlignment = Alignment.Center) {
+        Column(
+            Modifier.verticalScroll(rememberScrollState()).padding(start = 8.dp, end = 20.dp, top = 8.dp, bottom = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) { content() }
     }
 }
 
@@ -361,12 +411,15 @@ private fun GameToolbar(
     onUndo: () -> Unit,
     onRedo: () -> Unit,
     onHint: () -> Unit,
+    modifier: Modifier = Modifier,
+    /** true: 색이 많으면 줄바꿈 (좁은 옆 패널), false: 한 줄 가로 스크롤 */
+    wrapColors: Boolean = false,
 ) {
     val note = LocalNoteColors.current
-    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
         if (isColor) {
             // 컬러 퍼즐: 색연필 고르기 + 빈칸 표시
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            val swatches: @Composable () -> Unit = {
                 colors.forEachIndexed { i, color ->
                     val selected = tool == i + 1
                     Box(
@@ -385,6 +438,11 @@ private fun GameToolbar(
                     modifier = Modifier.width(140.dp),
                 )
             }
+            if (wrapColors) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp), itemVerticalAlignment = Alignment.CenterVertically) { swatches() }
+            } else {
+                Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) { swatches() }
+            }
         } else {
             // 흑백 퍼즐: 칠하기 / 빈칸 표시 (고른 쪽은 형광펜 + 눌린 상태)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -402,10 +460,19 @@ private fun GameToolbar(
                 )
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            StickerButton(stringResource(R.string.game_undo), onUndo, style = StickerStyle.Plain, icon = PixelIcons.Undo, enabled = canUndo, height = 44.dp, textStyle = toolText, modifier = Modifier.weight(1f))
-            StickerButton(stringResource(R.string.game_redo), onRedo, style = StickerStyle.Plain, icon = PixelIcons.Redo, enabled = canRedo, height = 44.dp, textStyle = toolText, modifier = Modifier.weight(1f))
-            StickerButton(stringResource(R.string.game_hint) + " $hints", onHint, style = StickerStyle.Plain, icon = PixelIcons.Bulb, height = 44.dp, textStyle = toolText, modifier = Modifier.weight(1f))
+        // 폭이 좁으면(폴드 커버 등) 되돌리기·다시 하기는 아이콘만 → 글자가 지나치게 작아지지 않게
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            val narrow = maxWidth < 340.dp
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                StickerButton(stringResource(R.string.game_undo), onUndo, style = StickerStyle.Plain, icon = PixelIcons.Undo, enabled = canUndo, height = 44.dp, textStyle = toolText, iconOnly = narrow, modifier = Modifier.weight(1f))
+                StickerButton(stringResource(R.string.game_redo), onRedo, style = StickerStyle.Plain, icon = PixelIcons.Redo, enabled = canRedo, height = 44.dp, textStyle = toolText, iconOnly = narrow, modifier = Modifier.weight(1f))
+                val hintLabel = stringResource(R.string.game_hint) + " $hints"
+                StickerButton(
+                    if (narrow) "$hints" else hintLabel, onHint,
+                    style = StickerStyle.Plain, icon = PixelIcons.Bulb, height = 44.dp, textStyle = toolText,
+                    modifier = Modifier.weight(1f).semantics(mergeDescendants = true) { contentDescription = hintLabel },
+                )
+            }
         }
     }
 }
@@ -436,8 +503,9 @@ private fun CompletedContent(state: GameUiState, sound: SoundManager, onRestart:
     val leftSlots = remember(state.rowClues) { state.rowClues.maxOfOrNull { it.size }?.coerceAtLeast(1) ?: 1 }
     val topSlots = remember(state.colClues) { state.colClues.maxOfOrNull { it.size }?.coerceAtLeast(1) ?: 1 }
 
-    Column(Modifier.fillMaxSize()) {
-        Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp)) {
+    // 색 입히기 무대: 흐려지는 원래 보드 + 그림 + 도장
+    val stage: @Composable (Modifier) -> Unit = { modifier ->
+        Box(modifier) {
             // 연출 초반: 풀던 보드(단서·격자·✕)를 그대로 깔고 흐리게 사라지게 한다
             val boardAlpha = 1f - segment(progress.value, 0f, 0.25f)
             if (board != null && boardAlpha > 0f) {
@@ -466,26 +534,47 @@ private fun CompletedContent(state: GameUiState, sound: SoundManager, onRestart:
                 )
             }
         }
-        AnimatedVisibility(panelVisible, enter = expandVertically(tween(450)) + fadeIn(tween(450))) {
-            // 버튼은 패널 위쪽에 두고 아래 여백을 넉넉히 → 하단 배너와 거리 확보
-            Column(
-                Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Text(puzzle.title.text(), style = MaterialTheme.typography.headlineMedium, color = note.ink, textAlign = TextAlign.Center)
-                Row(horizontalArrangement = Arrangement.spacedBy(18.dp), verticalAlignment = Alignment.CenterVertically) {
-                    ResultItem(PixelIcons.Clock, stringResource(R.string.game_time), formatElapsed(state.elapsedMs))
-                    ResultItem(PixelIcons.Bulb, stringResource(R.string.game_hints_label), state.hintsUsed.toString())
+    }
+    // 결과: 제목, 기록, 버튼
+    val panel: @Composable (Modifier) -> Unit = { modifier ->
+        Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(puzzle.title.text(), style = MaterialTheme.typography.headlineMedium, color = note.ink, textAlign = TextAlign.Center)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                ResultItem(PixelIcons.Clock, stringResource(R.string.game_time), formatElapsed(state.elapsedMs))
+                ResultItem(PixelIcons.Bulb, stringResource(R.string.game_hints_label), state.hintsUsed.toString())
+            }
+            Spacer(Modifier.height(2.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                StickerButton(stringResource(R.string.game_back_to_list), onBack, style = StickerStyle.Plain, modifier = Modifier.weight(1f))
+                state.nextId?.let { next ->
+                    StickerButton(stringResource(R.string.game_next), { onNext(next) }, icon = PixelIcons.Play, modifier = Modifier.weight(1f))
                 }
-                Spacer(Modifier.height(2.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StickerButton(stringResource(R.string.game_back_to_list), onBack, style = StickerStyle.Plain, modifier = Modifier.weight(1f))
-                    state.nextId?.let { next ->
-                        StickerButton(stringResource(R.string.game_next), { onNext(next) }, icon = PixelIcons.Play, modifier = Modifier.weight(1f))
-                    }
+            }
+            TextButton(onClick = { confirmRestart = true }) { Text(stringResource(R.string.game_restart), color = note.inkSoft) }
+        }
+    }
+
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val panelWidth = GameLayout.sidePanelWidth(maxWidth)
+        if (GameLayout.useSidePanel(maxWidth, maxHeight)) {
+            // 가로로 넓은 화면: 그림 | 결과. 결과 자리는 처음부터 비워 둬서 연출 도중 그림이 움직이지 않는다
+            Row(Modifier.fillMaxSize()) {
+                stage(Modifier.weight(1f).fillMaxHeight().padding(start = 12.dp, end = 8.dp, top = 8.dp, bottom = 12.dp))
+                SidePanel(panelWidth) {
+                    AnimatedVisibility(panelVisible, enter = fadeIn(tween(450))) { panel(Modifier.fillMaxWidth()) }
                 }
-                TextButton(onClick = { confirmRestart = true }) { Text(stringResource(R.string.game_restart), color = note.inkSoft) }
+            }
+        } else {
+            Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                stage(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp))
+                AnimatedVisibility(panelVisible, enter = expandVertically(tween(450)) + fadeIn(tween(450))) {
+                    // 버튼은 패널 위쪽에 두고 아래 여백을 넉넉히 → 하단 배너와 거리 확보
+                    // 큰 글꼴에서도 그림이 보이도록 결과는 화면 높이의 절반까지만, 넘치면 스크롤
+                    panel(
+                        Modifier.widthIn(max = GameLayout.ControlsMaxWidth).fillMaxWidth().heightIn(max = this@BoxWithConstraints.maxHeight * 0.5f)
+                            .verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 20.dp),
+                    )
+                }
             }
         }
     }

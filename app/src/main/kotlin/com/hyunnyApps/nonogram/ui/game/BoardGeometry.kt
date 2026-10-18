@@ -1,6 +1,15 @@
 package com.hyunnyApps.nonogram.ui.game
 
+import androidx.compose.ui.unit.dp
 import kotlin.math.floor
+
+/** 보드 칸 크기 기준. BoardView 와 완성 연출(RevealBoard)이 같은 값을 써야 위치가 맞는다 */
+object BoardMetrics {
+    val MinSlot = 15.dp
+    val MaxSlot = 34.dp
+    /** 큰 태블릿에서 작은 판이 지나치게 커지지 않도록 칸 크기 상한 */
+    val MaxCell = 72.dp
+}
 
 /**
  * 보드 배치 계산 (순수 계산, 단위 테스트 가능).
@@ -28,6 +37,7 @@ class BoardGeometry(
     offsetX: Float = 0f,
     offsetY: Float = 0f,
     val maxScale: Float = 4f,
+    private val maxCell: Float = Float.MAX_VALUE,
 ) {
     val baseCell: Float
     val slot: Float
@@ -39,7 +49,7 @@ class BoardGeometry(
         var cell = minOf(viewportWidth / (ls + columns), viewportHeight / (ts + rows))
         var s = cell.coerceIn(minSlot, maxSlot)
         if (s != cell) cell = minOf((viewportWidth - ls * s) / columns, (viewportHeight - ts * s) / rows)
-        baseCell = cell.coerceAtLeast(1f)
+        baseCell = cell.coerceAtMost(maxCell).coerceAtLeast(1f)
         slot = s
     }
 
@@ -82,7 +92,7 @@ class BoardGeometry(
     /** 같은 보드에 다른 확대/이동 값을 적용한 배치 */
     fun withTransform(scale: Float, offsetX: Float, offsetY: Float) = BoardGeometry(
         viewportWidth, viewportHeight, columns, rows, leftSlots, topSlots, minSlot, maxSlot,
-        scale, offsetX, offsetY, maxScale,
+        scale, offsetX, offsetY, maxScale, maxCell,
     )
 
     /** 두 손가락 제스처: (cx, cy)를 중심으로 zoom 배 확대하고 (dx, dy)만큼 이동한 새 변환 */

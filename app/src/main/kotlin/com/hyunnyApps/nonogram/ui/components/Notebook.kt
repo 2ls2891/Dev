@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,8 +34,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -122,6 +126,8 @@ fun StickerButton(
     height: Dp = 52.dp,
     selected: Boolean = false,
     textStyle: TextStyle = TextStyle(fontFamily = HandFont, fontSize = 22.sp),
+    /** true 면 아이콘만 보인다(좁은 화면). 글자는 화면 읽기용 설명으로만 쓴다 */
+    iconOnly: Boolean = false,
 ) {
     val note = LocalNoteColors.current
     val interaction = remember { MutableInteractionSource() }
@@ -139,6 +145,8 @@ fun StickerButton(
     val border = if (enabled) note.ink else note.ink.copy(alpha = 0.25f)
     val shadow = 4.dp
     val down = pressed || selected
+    // 자동 축소 하한은 글꼴 크기 설정과 무관하게 실제 11sp 정도로 (설정이 200%면 하한도 같이 커지는 것을 막음)
+    val minFont = (11f / LocalDensity.current.fontScale).coerceAtLeast(6f).sp
     Box(modifier.height(height + shadow)) {
         // 그림자: 오른쪽 아래로 shadow 만큼 밀린 같은 크기의 판
         Box(
@@ -153,15 +161,25 @@ fun StickerButton(
                 .background(if (enabled) fill else fill.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                 .border(2.dp, border, RoundedCornerShape(12.dp))
                 .clickable(interactionSource = interaction, indication = null, enabled = enabled, role = Role.Button, onClick = onClick)
+                .then(if (iconOnly && icon != null) Modifier.semantics { contentDescription = text } else Modifier)
                 .padding(horizontal = 12.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (icon != null) {
-                PixelIcon(icon, size = 20.dp, tint = content)
+                PixelIcon(icon, size = if (iconOnly) 24.dp else 20.dp, tint = content)
+                if (iconOnly) return@Row
                 Spacer(Modifier.width(8.dp))
             }
-            Text(text, style = textStyle, color = content, maxLines = 1)
+            // 큰 글꼴 설정이나 좁은 화면(폴드 커버)에서도 잘리지 않게 칸에 맞춰 글자를 줄인다
+            Text(
+                text,
+                style = textStyle,
+                color = content,
+                maxLines = 1,
+                autoSize = TextAutoSize.StepBased(minFontSize = minFont, maxFontSize = textStyle.fontSize, stepSize = 0.5.sp),
+                modifier = Modifier.weight(1f, fill = false),
+            )
         }
     }
 }
@@ -207,11 +225,13 @@ fun Stamp(text: String, modifier: Modifier = Modifier, size: Dp = 112.dp) {
             drawCircle(red, r - 3.dp.toPx(), style = Stroke(4.dp.toPx()))
             drawCircle(red, r - 10.dp.toPx(), style = Stroke(1.5.dp.toPx()))
         }
+        // 도장은 그림이라 글꼴 크기 설정과 무관하게 원 크기에 맞춘다
+        val density = LocalDensity.current
         Text(
             text,
             color = red,
             textAlign = TextAlign.Center,
-            style = TextStyle(fontFamily = HandFont, fontSize = (size.value / 4.6f).sp, lineHeight = (size.value / 4.2f).sp),
+            style = with(density) { TextStyle(fontFamily = HandFont, fontSize = (size / 4.6f).toSp(), lineHeight = (size / 4.2f).toSp()) },
         )
     }
 }

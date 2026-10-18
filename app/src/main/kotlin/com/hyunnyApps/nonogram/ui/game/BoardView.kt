@@ -78,19 +78,20 @@ fun BoardView(
     val topSlots = remember(colClues) { colClues.maxOf { it.size }.coerceAtLeast(1) }
 
     BoxWithConstraints(modifier) {
-        val minSlot = with(density) { 15.dp.toPx() }
-        val maxSlot = with(density) { 34.dp.toPx() }
+        val minSlot = with(density) { BoardMetrics.MinSlot.toPx() }
+        val maxSlot = with(density) { BoardMetrics.MaxSlot.toPx() }
+        val maxCell = with(density) { BoardMetrics.MaxCell.toPx() }
         val minTouch = with(density) { 40.dp.toPx() }
         val widthPx = constraints.maxWidth.toFloat()
         val heightPx = constraints.maxHeight.toFloat()
-        val base = remember(widthPx, heightPx, columns, rows, leftSlots, topSlots) {
-            BoardGeometry(widthPx, heightPx, columns, rows, leftSlots, topSlots, minSlot, maxSlot)
+        val base = remember(widthPx, heightPx, columns, rows, leftSlots, topSlots, maxCell) {
+            BoardGeometry(widthPx, heightPx, columns, rows, leftSlots, topSlots, minSlot, maxSlot, maxCell = maxCell)
         }
         // 손가락으로 정확히 누를 수 있는 크기까지 확대 가능
         val maxScale = (minTouch * 1.5f / base.baseCell).coerceAtLeast(1f)
         val geometry = BoardGeometry(
             widthPx, heightPx, columns, rows, leftSlots, topSlots, minSlot, maxSlot,
-            scale, offsetX, offsetY, maxScale,
+            scale, offsetX, offsetY, maxScale, maxCell,
         )
         val currentGeometry by rememberUpdatedState(geometry)
         val currentEnabled by rememberUpdatedState(enabled)

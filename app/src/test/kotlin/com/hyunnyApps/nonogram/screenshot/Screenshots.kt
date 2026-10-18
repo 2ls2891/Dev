@@ -19,6 +19,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
@@ -80,8 +81,10 @@ abstract class ScreenshotBase {
                         Column(Modifier.fillMaxSize()) {
                             Box(Modifier.weight(1f)) { content() }
                             HorizontalDivider(color = LocalNoteColors.current.ink.copy(alpha = 0.15f))
-                            Box(Modifier.fillMaxWidth().height(90.dp).background(Color(0x22888888)), contentAlignment = Alignment.Center) {
-                                Text("광고 배너 자리 (대형 적응형)", color = Color.Gray)
+                            // 대형 적응형 배너가 가질 수 있는 최대 높이(화면 높이의 20%, 50~150dp) → 가장 빡빡한 경우로 확인
+                            val bannerHeight = (LocalConfiguration.current.screenHeightDp * 0.2f).coerceIn(50f, 150f).dp
+                            Box(Modifier.fillMaxWidth().height(bannerHeight).background(Color(0x22888888)), contentAlignment = Alignment.Center) {
+                                Text("광고 배너 자리 (최대 높이)", color = Color.Gray)
                             }
                         }
                     }
@@ -91,6 +94,7 @@ abstract class ScreenshotBase {
     }
 
     protected fun capture(name: String) {
+        java.io.File("$out/$name.png").parentFile?.mkdirs()
         rule.waitForIdle()
         rule.onRoot().captureRoboImage("$out/$name.png")
     }
@@ -129,6 +133,60 @@ abstract class ScreenshotBase {
         vm.selectTool(1)
     }
 
+    /** 돌아온 사용자: 튜토리얼 봄, 퍼즐 몇 개 완성, 하나는 반쯤 칠함, 어제 하루 놓쳐 5일 기록이 끊김 */
+    protected fun prepareReturningUser() {
+        runBlocking {
+            val p = container.player
+            p.markTutorialSeen()
+            val daily = container.content.daily()
+            val todayIndex = DailyCalendar.dayIndex(LocalDate.parse(daily.epoch), container.today())
+            // 5일 연속 → 어제 놓침
+            for (d in (todayIndex - 6)..(todayIndex - 2)) p.onDailyCleared(d)
+            val pack = container.content.pack("mono-food-1")
+            val target = pack.puzzles[4]
+            val grid = Grid.fromRows(target.rows)
+            val marks = IntArray(grid.cells.size) { i -> if (i < grid.cells.size * 6 / 10) grid.cells[i] else 0 }
+            container.progress.save(target.id, pack.id, PuzzleProgress(grid.width, grid.height, MarkCodec.encode(marks)))
+            p.setLastPlayed(pack.id, target.id)
+            container.player.streak.first()
+        }
+        markCompleted("mono-nature-1", 7)
+    }
+
+    protected fun homeReturning(name: String) {
+        prepareReturningUser()
+        val vm = home()
+        rule.waitUntil(60_000) { vm.state.value.continueItem != null }
+        capture(name)
+    }
+
+    protected fun gamePlaying(name: String, id: String = "fe-dog-m15", source: String = "mono-nature-1") {
+        val vm = game(id, source)
+        fillRows(vm, 6)
+        capture(name)
+    }
+
+    protected fun gameCompleted(name: String) {
+        val vm = game("fe-dog-m15")
+        solve(vm)
+        rule.waitUntil(10_000) { vm.state.value.completed }
+        rule.mainClock.advanceTimeBy(4_000)
+        capture(name)
+    }
+
+    protected fun tutorialPractice(name: String) {
+        show { TutorialScreen(onMarkSeen = {}, onDone = {}, initialStep = 4) }
+        capture(name)
+    }
+
+    protected fun pack(name: String) {
+        markCompleted("mono-nature-1", 4)
+        val vm = PackViewModel(SavedStateHandle(mapOf(PackViewModel.ARG_PACK_ID to "mono-nature-1")), container)
+        show { PackScreen({}, { _, _ -> }, vm) }
+        rule.waitUntil(60_000) { !vm.state.value.loading && vm.state.value.completed == 4 }
+        capture(name)
+    }
+
     /** 컬렉션 화면용: 퍼즐 몇 개를 완성한 상태로 저장 */
     protected fun markCompleted(source: String, count: Int) = runBlocking {
         val puzzles = if (source == DAILY) container.content.daily().puzzles else container.content.pack(source).puzzles
@@ -148,28 +206,7 @@ class HomeFirstRunScreenshot : ScreenshotBase() {
 
 class HomeReturningScreenshot : ScreenshotBase() {
     @Test
-    fun run() {
-        // 돌아온 사용자: 튜토리얼 봄, 퍼즐 몇 개 완성, 하나는 반쯤 칠함, 어제 하루 놓쳐 5일 기록이 끊김
-        runBlocking {
-            val p = container.player
-            p.markTutorialSeen()
-            val daily = container.content.daily()
-            val todayIndex = DailyCalendar.dayIndex(LocalDate.parse(daily.epoch), container.today())
-            // 5일 연속 → 어제 놓침
-            for (d in (todayIndex - 6)..(todayIndex - 2)) p.onDailyCleared(d)
-            val pack = container.content.pack("mono-food-1")
-            val target = pack.puzzles[4]
-            val grid = Grid.fromRows(target.rows)
-            val marks = IntArray(grid.cells.size) { i -> if (i < grid.cells.size * 6 / 10) grid.cells[i] else 0 }
-            container.progress.save(target.id, pack.id, PuzzleProgress(grid.width, grid.height, MarkCodec.encode(marks)))
-            p.setLastPlayed(pack.id, target.id)
-            container.player.streak.first()
-        }
-        markCompleted("mono-nature-1", 7)
-        val vm = home()
-        rule.waitUntil(60_000) { vm.state.value.continueItem != null }
-        capture("02_home_returning")
-    }
+    fun run() = homeReturning("02_home_returning")
 }
 
 class HomeColorDarkScreenshot : ScreenshotBase() {
@@ -183,13 +220,7 @@ class HomeColorDarkScreenshot : ScreenshotBase() {
 
 class PackScreenshot : ScreenshotBase() {
     @Test
-    fun run() {
-        markCompleted("mono-nature-1", 4)
-        val vm = PackViewModel(SavedStateHandle(mapOf(PackViewModel.ARG_PACK_ID to "mono-nature-1")), container)
-        show { PackScreen({}, { _, _ -> }, vm) }
-        rule.waitUntil(60_000) { !vm.state.value.loading && vm.state.value.completed == 4 }
-        capture("04_pack")
-    }
+    fun run() = pack("04_pack")
 }
 
 class GameFirstTimeScreenshot : ScreenshotBase() {
@@ -244,13 +275,7 @@ class RevealMidScreenshot : ScreenshotBase() {
 
 class GameCompletedScreenshot : ScreenshotBase() {
     @Test
-    fun run() {
-        val vm = game("fe-dog-m15")
-        solve(vm)
-        rule.waitUntil(10_000) { vm.state.value.completed }
-        rule.mainClock.advanceTimeBy(4_000)
-        capture("10_game_completed_stamp")
-    }
+    fun run() = gameCompleted("10_game_completed_stamp")
 }
 
 class GameIndigoScreenshot : ScreenshotBase() {
@@ -280,10 +305,7 @@ class TutorialRule2Screenshot : ScreenshotBase() {
 
 class TutorialPracticeScreenshot : ScreenshotBase() {
     @Test
-    fun run() {
-        show { TutorialScreen(onMarkSeen = {}, onDone = {}, initialStep = 4) }
-        capture("14_tutorial_practice")
-    }
+    fun run() = tutorialPractice("14_tutorial_practice")
 }
 
 class RulesScreenshot : ScreenshotBase() {

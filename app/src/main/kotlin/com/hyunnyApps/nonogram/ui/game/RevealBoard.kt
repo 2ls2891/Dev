@@ -44,11 +44,11 @@ fun RevealBoard(puzzle: PuzzleOut, leftSlots: Int, topSlots: Int, progress: Floa
         val w = solution.width
         val h = solution.height
         // 시작: BoardView 와 같은 배치 (같은 최소/최대 단서 칸 크기)
-        val g = BoardGeometry(size.width, size.height, w, h, leftSlots, topSlots, 15.dp.toPx(), 34.dp.toPx())
+        val g = BoardGeometry(size.width, size.height, w, h, leftSlots, topSlots, BoardMetrics.MinSlot.toPx(), BoardMetrics.MaxSlot.toPx(), maxCell = BoardMetrics.MaxCell.toPx())
         val start = Rect(g.gridLeft, g.gridTop, g.gridLeft + g.gridWidth, g.gridTop + g.gridHeight)
         // 끝: 여백을 두고 가운데 정렬
         val pad = 28.dp.toPx()
-        val endCell = minOf((size.width - pad * 2) / w, (size.height - pad * 2) / h)
+        val endCell = minOf((size.width - pad * 2) / w, (size.height - pad * 2) / h, BoardMetrics.MaxCell.toPx())
         val endW = endCell * w
         val endH = endCell * h
         val end = Rect(Offset((size.width - endW) / 2, (size.height - endH) / 2), Size(endW, endH))
