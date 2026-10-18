@@ -40,7 +40,10 @@ app/src/main/kotlin/com/hyunnyApps/nonogram/
 4. 설정 화면: 동의가 필요한 지역이면 "개인정보 · 광고 동의 설정" 버튼 노출 (UMP 필수 요구사항)
 
 ### 배너 (하단 고정, 앱 전체에 1개)
-- 대형 앵커 적응형 배너(`getLargeAnchoredAdaptiveBannerAdSize`, Google 현재 권장)
+- 320×50 표준 배너, 모든 기기에서 높이 50dp (`AdConfig.USE_LARGE_BANNER = false`)
+  - 대형 앵커 적응형(`getLargeAnchoredAdaptiveBannerAdSize`)은 SDK 계산 높이가 폰 108~123dp, 폴드 펼침·태블릿 150dp라 퍼즐 화면을 너무 많이 가린다.
+    수익을 비교해 보고 싶으면 `USE_LARGE_BANNER = true` 한 줄로 바꿀 수 있다
+  - 예전 앵커 적응형(`getCurrentOrientationAnchoredAdaptiveBannerAdSize`)은 SDK 25.0.0에서 지원 중단(deprecated)되어 쓰지 않는다
 - 로드 전에도 배너 높이만큼 자리 확보 → 광고가 늦게 떠도 보드가 밀리지 않음 (오클릭 방지)
 - 게임 조작 버튼과 배너 사이 20dp 여백, 완료 화면 버튼은 화면 위쪽에 배치
 - 생명주기에 맞춰 pause/resume/destroy
@@ -151,7 +154,7 @@ Python·콘텐츠 도구는 필요 없다 (생성된 퍼즐이 `content/packs/`�
 ```
 시나리오는 `app/src/test/.../screenshot/Screenshots.kt` (홈, 팩, 게임 진행/완료, 컬러, 튜토리얼, 규칙).
 기기 크기별 화면은 `DeviceScreenshots.kt` → `docs/screenshots/devices/` (폴드 커버 344/412dp, 폴드 펼침 690/984dp·가로,
-태블릿 세로/가로, 폰 가로 창, 작은 폰+글꼴 200%). 배너 자리는 대형 적응형 배너의 최대 높이(화면 높이 20%, 최대 150dp)로 그려 가장 빡빡한 경우를 본다.
+태블릿 세로/가로, 폰 가로 창, 작은 폰+글꼴 200%). 배너 자리는 실제와 같은 320×50으로 그린다.
 화면을 바꾸면 스냅샷도 함께 커밋해 변경 전후를 비교한다.
 
 ## 출시 전 체크리스트

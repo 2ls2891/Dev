@@ -3,13 +3,15 @@ package com.hyunnyApps.nonogram.ads
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -19,7 +21,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 
 /**
@@ -38,11 +39,11 @@ fun AnchoredBannerAd(ads: AdsManager, modifier: Modifier = Modifier, unitId: Str
         val context = LocalContext.current
         val density = LocalDensity.current
         val widthDp = maxWidth.value.toInt()
-        // 대형 앵커 적응형 배너 (Google 현재 권장, 화면 높이의 최대 20% · 50~150dp).
-        // 보드 공간이 부족하다고 판단되면 여기만 바꾸면 된다.
-        val adSize = remember(widthDp) { AdSize.getLargeAnchoredAdaptiveBannerAdSize(context, widthDp) }
+        // 크기 정책은 AdConfig.bannerSize (기본 320×50). 고정 크기 배너는 가운데 정렬
+        val adSize = remember(widthDp) { AdConfig.bannerSize(context, widthDp) }
+        val adWidth = with(density) { adSize.getWidthInPixels(context).toDp() }
         val height = with(density) { adSize.getHeightInPixels(context).toDp() }
-        Box(Modifier.fillMaxWidth().height(height)) {
+        Box(Modifier.fillMaxWidth().height(height), contentAlignment = Alignment.Center) {
             if (ready) {
                 val lifecycle = LocalLifecycleOwner.current.lifecycle
                 val adView = remember(adSize, unitId) {
@@ -54,7 +55,7 @@ fun AnchoredBannerAd(ads: AdsManager, modifier: Modifier = Modifier, unitId: Str
                 }
                 AndroidView(
                     factory = { adView.also { (it.parent as? ViewGroup)?.removeView(it) } },
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.width(adWidth).fillMaxHeight(),
                 )
                 DisposableEffect(adView, lifecycle) {
                     val observer = LifecycleEventObserver { _, event ->

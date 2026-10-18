@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,7 +21,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
@@ -81,10 +82,11 @@ abstract class ScreenshotBase {
                         Column(Modifier.fillMaxSize()) {
                             Box(Modifier.weight(1f)) { content() }
                             HorizontalDivider(color = LocalNoteColors.current.ink.copy(alpha = 0.15f))
-                            // 대형 적응형 배너가 가질 수 있는 최대 높이(화면 높이의 20%, 50~150dp) → 가장 빡빡한 경우로 확인
-                            val bannerHeight = (LocalConfiguration.current.screenHeightDp * 0.2f).coerceIn(50f, 150f).dp
-                            Box(Modifier.fillMaxWidth().height(bannerHeight).background(Color(0x22888888)), contentAlignment = Alignment.Center) {
-                                Text("광고 배너 자리 (최대 높이)", color = Color.Gray)
+                            // 실제 배너와 같은 크기(320×50)
+                            Box(Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.Center) {
+                                Box(Modifier.width(320.dp).fillMaxHeight().background(Color(0x22888888)), contentAlignment = Alignment.Center) {
+                                    Text("광고 배너 320×50", color = Color.Gray)
+                                }
                             }
                         }
                     }
